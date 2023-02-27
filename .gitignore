@@ -1,14 +1,16 @@
-node_modules/
-bundle.js
-npm-debug.log
 
-/.idea
-/public
+client/node_modules
+server/node_modules
 
-.env
-.passport.js
-.DS_Store
+client/npm-debug.log*
 
-build/
-dist/
-client/.parcel-cache
+client/build
+
+**/.env*
+!**/.env*.example
+
+# ignore mongo data
+!server/docker/mongo-data
+server/docker/mongo-data/*
+!server/docker/mongo-data/.gitkeep
+

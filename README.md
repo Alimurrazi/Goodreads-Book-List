@@ -1,149 +1,247 @@
-<h1 align="center">
-🌐 MERN Stack
-</h1>
-<p align="center">
-MongoDB, Expressjs, React/Redux, Nodejs
-</p>
+# MERN Boilerplate
 
-<p align="center">
-   <a href="https://github.com/amazingandyyy/mern/blob/master/LICENSE">
-      <img src="https://img.shields.io/badge/License-MIT-green.svg" />
-   </a>
-   <a href="https://circleci.com/gh/amazingandyyy/mern">
-      <img src="https://circleci.com/gh/amazingandyyy/mern.svg?style=svg" />
-   </a>
-</p>
+This is full stack boilerplate with React, Redux, Express, Mongoose and Passport. Skip the tedious part and get straight to developing your app.
 
-> MERN is a fullstack implementation in MongoDB, Expressjs, React/Redux, Nodejs.
+## Demo
 
-MERN stack is the idea of using Javascript/Node for fullstack web development.
+- Live demo is available here: **[Demo](https://mern-boilerplate.amd2.localhost3002.live)**
 
-## clone or download
-```terminal
-$ git clone https://github.com/amazingandyyy/mern.git
-$ yarn # or npm i
+## Deployment with Docker (2023. update)
+
+Since Heroku is no longer free I made Docker production deployment that you can use on any Linux VPS.
+
+- original [mern-docker-prod](https://github.com/nemanjam/mern-docker-prod) repository with Docker code and instructions that you can reuse to deploy your own Mern apps
+- Traefik part of the deployment [traefik-proxy](https://github.com/nemanjam/traefik-proxy) and [traefik-proxy/apps/mern-boilerplate](https://github.com/nemanjam/traefik-proxy/tree/main/apps/mern-boilerplate)
+
+
+## Features
+
+- Server
+
+  - User and Message models with `1:N` relation
+  - Full CRUD REST API operations for both Message and User models
+  - Passport authentication with local `email/password`, Facebook and Google OAuth strategies and JWT protected APIs
+  - `User` and `Admin` roles
+  - NodeJS server with Babel for new JS syntax unified with React client
+  - `async/await` syntax across whole app
+  - Joi server side validation of user's input
+  - Single `.env` file configuration
+  - Image upload with Multer
+  - Database seed
+
+- Client
+
+  - React client with functional components and Hooks
+  - Redux state management with Thunk for async actions
+  - CSS agnostic, so you don't waste your time replacing my CSS framework with yours
+  - Home, Users, Profile, Admin, Notfound, Login and Register pages
+  - Protected routes with Higher order components
+  - Different views for unauthenticated, authenticated and admin user
+  - Edit/Delete forms for Message and User with Formik and Yup validation
+  - Admin has privileges to edit and delete other users and their messages
+  - Layout component, so you can have pages without Navbar
+  - Loading states with Loader component
+  - Single config file within `/constants` folder
+
+## Installation
+
+Read on on how to set up this for development. Clone the repo.
+
+```
+$ git clone https://github.com/nemanjam/mern-boilerplate.git
+$ cd mern-boilerplate
 ```
 
-## project structure
-```terminal
-LICENSE
-package.json
-server/
-   package.json
-   .env (to create .env, check [prepare your secret session])
-client/
-   package.json
-...
+### Server
+
+#### .env file
+
+Rename `.env.example` to `.env` and fill in database connection strings, Google and Facebook tokens, JWT secret and your client and server production URLs.
+
+```
+#db
+MONGO_URI_DEV=mongodb://localhost:27017/mernboilerplate
+MONGO_URI_PROD=
+
+#google
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_CALLBACK_URL=/auth/google/callback
+
+#facebook
+FACEBOOK_APP_ID=
+FACEBOOK_SECRET=
+FACEBOOK_CALLBACK_URL=/auth/facebook/callback
+
+#jwt
+JWT_SECRET_DEV=secret
+JWT_SECRET_PROD=
+
+#site urls
+CLIENT_URL_DEV=https://localhost:3000
+CLIENT_URL_PROD=https://mern-boilerplate-demo.herokuapp.com
+SERVER_URL_DEV=https://localhost:5000
+SERVER_URL_PROD=https://mern-boilerplate-demo.herokuapp.com
+
+#img folder path
+IMAGES_FOLDER_PATH=/public/images/
 ```
 
-# Usage (run fullstack app on your machine)
+#### Generate certificates
 
-## Prerequisites
-- [MongoDB](https://gist.github.com/nrollr/9f523ae17ecdbb50311980503409aeb3)
-- [Node](https://nodejs.org/en/download/) ^10.0.0
-- [npm](https://nodejs.org/en/download/package-manager/)
+Facebook OAuth requires that your server runs on `https` in development as well, so you need to generate certificates. Go to `/server/security` folder and run this.
 
-notice, you need client and server runs concurrently in different terminal session, in order to make them talk to each other
-
-## Client-side usage(PORT: 3000)
-```terminal
-$ cd client          // go to client folder
-$ yarn # or npm i    // npm install packages
-$ npm run dev        // run it locally
-
-// deployment for client app
-$ npm run build // this will compile the react code using webpack and generate a folder called docs in the root level
-$ npm run start // this will run the files in docs, this behavior is exactly the same how gh-pages will run your static site
+```
+$ cd server/security
+$ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout cert.key -out cert.pem -config req.cnf -sha256
 ```
 
-## Server-side usage(PORT: 8000)
+#### Install dependencies
 
-### Prepare your secret
-
-run the script at the first level:
-
-(You need to add a JWT_SECRET in .env to connect to MongoDB)
-
-```terminal
-// in the root level
+```
 $ cd server
-$ echo "JWT_SECRET=YOUR_JWT_SECRET" >> src/.env
+$ npm install
 ```
 
-### Start
+#### Run the server
 
-```terminal
-$ cd server   // go to server folder
-$ npm i       // npm install packages
-$ npm run dev // run it locally
-$ npm run build // this will build the server code to es5 js codes and generate a dist file
+You are good to go, server will be available on `https://localhost:5000`
+
+```
+$ npm run server
 ```
 
-## Deploy Server to [Heroku](https://dashboard.heroku.com/)
-```terminal
-$ npm i -g heroku
+### Client
+
+Just install the dependencies and run the dev server. App will load on `https://localhost:3000`.
+
+```
+$ cd client
+$ npm install
+$ npm start
+```
+
+That's it as far for development setup. For production check the `Deployment on Heroku` section.
+
+## Screenshots
+
+![Screenshot1](/screenshots/Screenshot_1.png)
+
+![Screenshot2](/screenshots/Screenshot_2.png)
+
+![Screenshot3](/screenshots/Screenshot_3.png)
+
+![Screenshot4](/screenshots/Screenshot_4.png)
+
+![Screenshot5](/screenshots/Screenshot_5.png)
+
+![Screenshot6](/screenshots/Screenshot_6.png)
+
+## Deployment on Heroku
+
+#### Push to Heroku
+
+This project is already all set up for deployment on Heroku, you just need to create Heroku application add heroku remote to this repo and push it to `heroku` origin.
+
+```
 $ heroku login
+$ heroku create my-own-app-name
+$ git remote add heroku https://git.heroku.com/my-own-app-name.git
+$ git push heroku master
+$ heroku open
+```
+
+#### Database setup
+
+But before that you need MongoDB database, so go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas), create cluster, whitelist all IPs and get database URL. Set that URL in `.env` file as `MONGO_URI_PROD`.
+
+```
+MONGO_URI_PROD=mongodb+srv://<your-username-here>:<your-password-here>@cluster0-abcd.mongodb.net/test?retryWrites=true&w=majority
+```
+
+If you don't insert environment variables in Heroku manually via web interface or console you'll need to remove `.env` file from `server/.gitignore` and push it to Heroku. Never push `.env` file to development repo though.
+
+```
 ...
-$ heroku create
-$ npm run heroku:add <your-super-amazing-heroku-app>
-// remember to run this command in the root level, not the server level, so if you follow the documentation along, you may need to do `cd ..`
-$ pwd
-/Users/<your-name>/mern
-$ npm run deploy:heroku
+#.env #comment out .env file
+...
 ```
 
-### After creating heroku
+In the following section you can read detailed instructions about Heroku deployment process.
 
-if using webpack:
-remember to update the file of [client/webpack.prod.js](https://github.com/amazingandyyy/mern/blob/master/client/webpack.prod.js)
+### Server setup
+
+#### Development
+
+Server uses Babel so that we can use the same newer JavaScript syntax like the one used on the Client. In development we are passing `server/src/index.js` file to `babel-node` executable along with `nodemon` daemon. We run that with `npm run server` script.
+
+```
+"server": "nodemon --exec babel-node src/index.js",
+```
+
+#### Production
+
+That is fine for development, we compile the source on every run but for production we want to avoid that and to compile and build code once to JavaScript version which Node.JS can execute. So we take all the code from `/server/src` folder compile it and put the output into `/server/build` destination folder. `-d` is short for destination, and `-s` flag is for sourcemaps for debugging. We make that into `build-babel` script.
+
+```
+"build-babel": "babel -d ./build ./src -s",
+```
+
+We also need to delete and make `build` folder on every deployment, so we do that with this simple script.
+
+```
+"clean": "rm -rf build && mkdir build",
+```
+
+Now we have everything to build our server code. We do that by calling 2 last scripts.
+
+```
+"build": "npm run clean && npm run build-babel",
+```
+
+Now we just need to call build script and run compiled file with node. Make sure Babel is in the production dependencies in the `server/package.json` or you'll get "babel is not defined" error on Heroku.
+
+```
+"start-prod": "npm run build && node ./build/index.js",
+```
+
+#### Running server on Heroku
+
+Our server is now all set up, all we need is to call `start-prod` script. Heroku infers runtime he needs to run the application by the type of dependencies file in the root folder, so for Node.JS we need another `package.json`. Heroku will call `start` script after building phase so we just need to pass our `start-prod` script to spin up the server with the `--prefix server` where `server` is folder in which `package.json` with that script is located.
+
+```
+"start": "npm run start-prod --prefix server",
+```
+
+#### Installing dependencies
+
+Before all this happens Heroku needs to install the dependencies for both server and client, `heroku-postbuild` script is meant for that. `NPM_CONFIG_PRODUCTION=false` variable is there to disable production environment while dependencies are being installed. Again `--prefix` flag is specifying the folder of the script being run. In this script we build our React client as well.
+
+```
+"heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix server && npm install --prefix client && npm run build --prefix client"
+```
+
+### Client Setup
+
+Before you push to production you'll need to set your URLs in `client/constants`. That's it.
+
 ```javascript
- 'API_URI': JSON.stringify('https://your-super-amazing-heroku-app.herokuapp.com')
+export const FACEBOOK_AUTH_LINK =
+  "https://my-own-app.herokuapp.com/auth/facebook";
+export const GOOGLE_AUTH_LINK = "https://my-own-app.herokuapp.com/auth/google";
 ```
-if using parcel
-remember to update the file of [client/.env.production](https://github.com/amazingandyyy/mern/blob/master/client/.env.production.js)
-```
- REACT_APP_API_URI=https://your-super-amazing-heroku-app.herokuapp.com
-```
-# Dependencies(tech-stacks)
-Client-side | Server-side
---- | ---
-axios: ^0.15.3 | bcrypt-nodejs: ^0.0.3
-babel-preset-stage-1: ^6.1.18|body-parser: ^1.15.2
-lodash: ^3.10.1 | cors: ^2.8.1
-react: ^16.2.0 | dotenv: ^2.0.0
-react-dom: ^16.2.0 | express: ^4.14.0
-react-redux: ^4.0.0 | jwt-simple: ^0.5.1
-react-router-dom: ^4.2.2 | mongoose: ^4.7.4
-redux: ^3.7.2 | morgan: ^1.7.0
-redux-thunk: ^2.1.0 |
 
-# Screenshots of this project
+## References
 
-User visit public and Home page
-![User visit public and Home page](http://i.imgur.com/ORCGHHY.png)
+- Brad Traversy [Dev connector 2.0](https://github.com/bradtraversy/devconnector_2.0)
+- Brad Traversy [Learn The MERN Stack Youtube playlist](https://www.youtube.com/watch?v=PBTYxXADG_k&list=PLillGF-RfqbbiTGgA77tGO426V3hRF9iE)
+- Thinkster [react-redux-realworld-example-app](https://github.com/gothinkster/react-redux-realworld-example-app)
+- Thinkster [
+  node-express-realworld-example-app ](https://github.com/gothinkster/node-express-realworld-example-app)
+- Quinston Pimenta [Deploy React with Node (Express, configured for ES6, Babel) to Heroku (without babel-node)](https://www.youtube.com/watch?v=mvI25HLDfR4)
 
-User can sign in or sign up
-![User can sign in or sign up](http://i.imgur.com/rrmbU5I.png)
+- Kim Nguyen [How to Deploy ES6 Node.js & Express back-end to Heroku](https://medium.com/@kimtnguyen/how-to-deploy-es6-node-js-express-back-end-to-heroku-7e6743e8d2ff)
 
-After signing in user can go to account route and make request to token-protected API endpoint
-![After signing in user can go to account route](http://i.imgur.com/FzLB51u.png)
+## Licence
 
-## Standard
-
-[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
-
-## BUGs or comments
-
-[Create new Issues](https://github.com/amazingandyyy/mern/issues) (preferred)
-
-Email Me: amazingandyyy@gmail.com (welcome, say hi)
-
-## Author
-[Amazingandyyy](https://amazingandyyy.com)
-
-I recently launch my monthly mentorship program, feel free to reach out and see what we can grow together:
-
-<a href="https://mentorcruise.com/mentor/andychen/"> <img src="https://cdn.mentorcruise.com/img/banner/fire-sm.svg" width="240" alt="MentorCruise"> </a>
-
-### License
-[MIT](https://github.com/amazingandyyy/mern/blob/master/LICENSE)
+### MIT

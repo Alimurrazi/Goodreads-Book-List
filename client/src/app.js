@@ -1,38 +1,65 @@
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { HashRouter, Route, Routes } from 'react-router-dom';
-import Header from './components/header';
-import Home from './components/home';
-import Public from './components/public';
-import Account from './components/account';
-import Signin from './components/auth/signin';
-import Signup from './components/auth/signup';
-import Signout from './components/auth/signout'
-import AuthComponent from './components/auth/require_auth';
-import { AUTH_USER } from './actions/types';
-import { store } from './store';
-import '../style/style.scss'
+import React, { useEffect } from 'react';
+import { Route, Switch } from 'react-router-dom';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import Cookies from 'js-cookie';
 
-const token = localStorage.getItem('auth_jwt_token');
+import Login from './pages/Login/Login';
+import Register from './pages/Register/Register';
+import Home from './pages/Home/Home';
+import Profile from './pages/Profile/Profile';
+import Users from './pages/Users/Users';
+import Admin from './pages/Admin/Admin';
+import NotFound from './pages/NotFound/NotFound';
 
-// if we have a token, consider the user to be signed in
-if (token) {
-  store.dispatch({type: AUTH_USER})
-}
-ReactDOM.render(
-  <Provider store={store}>
-    <HashRouter hashType="noslash">
-      <Header />
-      <div className='container'>
-        <Routes>
-          <Route exact path="/" element= {<Home/>} />
-          <Route path="/public" element= {<Public/>} />
-          <Route path="/account" element= {<AuthComponent Component={Account}/>} />
-          <Route path="/signin" element= {<Signin/>} />
-          <Route path="/signup" element= {<Signup/>} />
-          <Route path="/signout" element= {<Signout/>} />
-        </Routes>
-      </div>
-    </HashRouter>
-  </Provider>
-  , document.getElementById('root'));
+import Loader from './components/Loader/Loader';
+
+import { logInUserWithOauth, loadMe } from './store/actions/authActions';
+
+const App = ({ logInUserWithOauth, auth, loadMe }) => {
+  useEffect(() => {
+    loadMe();
+  }, [loadMe]);
+
+  //redosled hookova
+  useEffect(() => {
+    if (window.location.hash === '#_=_') window.location.hash = '';
+
+    const cookieJwt = Cookies.get('x-auth-cookie');
+    if (cookieJwt) {
+      Cookies.remove('x-auth-cookie');
+      logInUserWithOauth(cookieJwt);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!auth.appLoaded && !auth.isLoading && auth.token && !auth.isAuthenticated) {
+      loadMe();
+    }
+  }, [auth.isAuthenticated, auth.token, loadMe, auth.isLoading, auth.appLoaded]);
+
+  return (
+    <>
+      {auth.appLoaded ? (
+        <Switch>
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
+          <Route path="/users" component={Users} />
+          <Route path="/notfound" component={NotFound} />
+          <Route path="/admin" component={Admin} />
+          <Route exact path="/:username" component={Profile} />
+          <Route exact path="/" component={Home} />
+          <Route component={NotFound} />
+        </Switch>
+      ) : (
+        <Loader />
+      )}
+    </>
+  );
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default compose(connect(mapStateToProps, { logInUserWithOauth, loadMe }))(App);
