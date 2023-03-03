@@ -8,7 +8,7 @@ client/build
 
 **/.env*
 !**/.env*.example
-
+*/dist
 # ignore mongo data
 !server/docker/mongo-data
 server/docker/mongo-data/*
