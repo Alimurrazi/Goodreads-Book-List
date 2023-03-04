@@ -2,8 +2,8 @@ import express from 'express';
 import * as http from 'http';
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
-import { CommonRoutesConfig } from './common/common.routes.config';
-import { UserRoutesConfig } from './users/users.routes.config';
+import { CommonRoutesConfig } from './src/common/common.routes.config';
+import { UserRoutesConfig } from './src/users/users.routes.config';
 import debug from 'debug';
 import cors from 'cors';
 
