@@ -16,6 +16,9 @@ class UsersService implements CRUD {
   async readById(id: string) {
     return UsersDao.getUserById(id);
   }
+  async getByEmail(email: string) {
+    return UsersDao.getUserByEmail(email);
+  }
   async deleteById(id: string) {
     return UsersDao.removeUserById(id);
   }

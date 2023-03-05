@@ -1,5 +1,7 @@
 import express from 'express';
 import { CommonRoutesConfig } from '../common/common.routes.config';
+import usersController from './controllers/users.controller';
+import usersMiddleware from './middlewares/users.middleware';
 
 export class UserRoutesConfig extends CommonRoutesConfig {
   constructor(app: express.Application) {
@@ -11,24 +13,22 @@ export class UserRoutesConfig extends CommonRoutesConfig {
   configureRoutes(): express.Application {
     this.app
       .route('/users')
-      .get((req: express.Request, res: express.Response) => {
-        res.status(200).send('list of users');
-      })
-      .post((req: express.Request, res: express.Response) => {
-        res.status(200).send('post to users');
-      });
+      .get(usersController.getUsers)
+      .post(
+        usersMiddleware.validateRequiredBodyFields,
+        usersMiddleware.validateSameEmailDoesnotExist,
+        usersController.createUser,
+      );
+
+    this.app.param('userId', usersMiddleware.extractUserId);
 
     this.app
       .route(`/users/:userId`)
-      // .all((req: express.Request, res: express.Response) => {
-      //   console.log('all route passing me');
-      // })
-      .get((req: express.Request, res: express.Response) => {
-        res.status(200).send('User details');
-      })
-      .patch((req: express.Request, res: express.Response) => {
-        res.status(200).send('User details update');
-      });
+      .all(usersMiddleware.validateUserExists)
+      .get(usersController.getUserById)
+      .delete(usersController.removeUser)
+      .put(usersMiddleware.validateRequiredBodyFields, usersController.putUser)
+      .patch(usersController.patchUser);
 
     return this.app;
   }
