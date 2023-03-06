@@ -11,6 +11,7 @@ const app = express();
 const server = http.createServer(app);
 const port = 3000;
 const routes: CommonRoutesConfig[] = [];
+process.env['DEBUG'] = 'app';
 const debugLog = debug('app');
 
 app.use(express.json());
