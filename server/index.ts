@@ -6,6 +6,7 @@ import { CommonRoutesConfig } from './src/common/common.routes.config';
 import { UserRoutesConfig } from './src/users/users.routes.config';
 import debug from 'debug';
 import cors from 'cors';
+import { ScraperRoutesConfig } from './src/scraper/scraper.routes.config';
 
 const app = express();
 const server = http.createServer(app);
@@ -37,6 +38,7 @@ if (!process.env.DEBUG) {
 app.use(expressWinston.logger(loggerOptions));
 
 routes.push(new UserRoutesConfig(app));
+routes.push(new ScraperRoutesConfig(app));
 const runningMsg = `Server running at http://localhost:${port}`;
 app.get('/', (req, res) => {
   res.status(200).send(runningMsg);
