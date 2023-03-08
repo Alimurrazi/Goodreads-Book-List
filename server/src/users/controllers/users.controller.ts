@@ -3,7 +3,7 @@ import express from 'express';
 import usersService from '../services/users.service';
 import debug from 'debug';
 
-const log: debug.IDebugger = debug('app:users-controller');
+const log = debug('app:users-controller');
 
 class UsersController {
   async getUsers(req: express.Request, res: express.Response) {
