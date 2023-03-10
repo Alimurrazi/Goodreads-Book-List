@@ -10,7 +10,7 @@ export class ScraperRoutesConfig extends CommonRoutesConfig {
     return this.name;
   }
   configureRoutes(): express.Application {
-    this.app.route('/scraper/sync').get(ScraperController.syncContent);
+    this.app.route('/scraper/sync').post(ScraperController.syncContent);
     return this.app;
   }
 }

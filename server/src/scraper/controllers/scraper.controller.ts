@@ -11,9 +11,12 @@ interface Book {
 class ScraperController {
   async syncContent(req: express.Request, res: express.Response) {
     const url = 'https://www.goodreads.com/shelf/show/bengali';
-    //    const selectedElem = 'div.content > div.mainContentContainer > div.mainContent > div.mainContentFloat > div.leftContainer > div.elementList > div.left';
     const selectedElem = 'div.left';
-    axios(url).then(async (response) => {
+    axios(url, {
+      headers: {
+        Cookie: req.body.authCookie,
+      },
+    }).then(async (response) => {
       const html_data = response.data;
       const $ = cheerio.load(html_data);
       const listedBooks: Book[] = [];
