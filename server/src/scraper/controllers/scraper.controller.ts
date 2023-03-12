@@ -10,33 +10,53 @@ interface Book {
 
 class ScraperController {
   async syncContent(req: express.Request, res: express.Response) {
-    const url = 'https://www.goodreads.com/shelf/show/bengali';
-    const selectedElem = 'div.left';
-    axios(url, {
-      headers: {
-        Cookie: req.body.authCookie,
-      },
-    }).then(async (response) => {
-      const html_data = response.data;
-      const $ = cheerio.load(html_data);
-      const listedBooks: Book[] = [];
+    const listedBooks: Book[] = [];
+    let i = 1;
+    let shouldContinue = true;
+    //    const promises: Promise<any>[] = [];
 
-      $(selectedElem).each(async (index, element) => {
-        const bookName = $(element).children('a.bookTitle').text();
-        const author = $(element).children('span.name').text();
-        const ratingInfo = $(element).children('span.greyText').text();
+    while (shouldContinue) {
+      const url = `https://www.goodreads.com/shelf/show/bengali?page=${i}`;
+      const selectedElem = 'div.left';
+      await axios(url, {
+        headers: {
+          Cookie: req.body.authCookie,
+        },
+      })
+        .then((response) => {
+          const html_data = response.data;
+          const $ = cheerio.load(html_data);
+          const fetchedBooks = $(selectedElem);
+          fetchedBooks.each(async (index, element) => {
+            if (fetchedBooks.length > 0) {
+              const bookName = $(element).children('a.bookTitle').text();
+              const parentAuthor = $(element).find('span')[1];
+              const authorDiv = $(parentAuthor).children('div.authorName__container');
+              const authorSpan = $(authorDiv).find('span')[0];
+              const author = $(authorSpan).text();
+              const ratingInfo = $(element).children('span.greyText').text();
 
-        const book = {
-          book: bookName,
-          author: author,
-          rating: ratingInfo,
-        };
+              const book = {
+                book: bookName,
+                author: author,
+                rating: ratingInfo,
+              };
 
-        console.log(bookName);
-        listedBooks.push(book);
-      });
-      await res.status(200).send(listedBooks);
-    });
+              console.log(bookName);
+              listedBooks.push(book);
+            } else {
+              shouldContinue = false;
+            }
+          });
+          i++;
+        })
+        .catch((error) => {
+          shouldContinue = false;
+        });
+      // promises.push(promise);
+    }
+    //   await Promise.all(promises);
+    await res.status(200).send(listedBooks);
   }
 }
 export default new ScraperController();
