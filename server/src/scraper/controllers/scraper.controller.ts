@@ -2,25 +2,19 @@ import axios from 'axios';
 import express from 'express';
 import cheerio from 'cheerio';
 
-interface Book {
-  book: string;
-  author: string;
-  avgRating: number;
-  ratings: number;
-  firstPublished: number;
-}
+import debug from 'debug';
+import { Book } from '../dtos/book.dto';
+const log = debug('app:scraper-controller');
 
 class ScraperController {
   async syncContent(req: express.Request, res: express.Response) {
     const listedBooks: Book[] = [];
-    let i = 1;
-    let shouldContinue = true;
-    //    const promises: Promise<any>[] = [];
+    const promises: Promise<void>[] = [];
 
-    while (shouldContinue) {
+    for (let i = 1; i <= 20; i++) {
       const url = `https://www.goodreads.com/shelf/show/favourites?page=${i}`;
       const selectedElem = 'div.left';
-      await axios(url, {
+      const promise = axios(url, {
         headers: {
           Cookie: req.body.authCookie,
         },
@@ -31,6 +25,13 @@ class ScraperController {
           const fetchedBooks = $(selectedElem);
           fetchedBooks.each(async (index, element) => {
             if (fetchedBooks.length > 0) {
+              const elementText = $(element).text();
+              const regex = /\(shelved (\d+) times/;
+              const match = elementText.match(regex);
+              const totalShelved = match ? parseInt(match[1]) : 0;
+
+              const imgLink = $(element).children('a.leftAlignedImage').find('img').attr('src');
+
               const bookName = $(element).children('a.bookTitle').text();
 
               const parentAuthor = $(element).find('span')[1];
@@ -52,20 +53,21 @@ class ScraperController {
                 avgRating: avgRatingMatch ? parseFloat(avgRatingMatch[1]) : -1,
                 ratings: ratingsMatch ? parseInt(ratingsMatch[1].replace(/,/g, '')) : -1,
                 firstPublished: publishedMatch ? parseInt(publishedMatch[1]) : -1,
+                totalShelved: totalShelved,
+                img: imgLink ? imgLink : '',
               };
               listedBooks.push(book);
             } else {
-              shouldContinue = false;
+              log(`No book found in ${i} page`);
             }
           });
-          i++;
         })
         .catch((error) => {
-          shouldContinue = false;
+          log(error);
         });
-      // promises.push(promise);
+      promises.push(promise);
     }
-    //   await Promise.all(promises);
+    await Promise.all(promises);
     await res.status(200).send(listedBooks);
   }
 }
