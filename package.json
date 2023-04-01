@@ -15,6 +15,7 @@
   },
   "author": "Nemanja Mitic (https://github.com/nemanjam)",
   "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "@fluentui/react": "^8.107.0"
+  }
 }

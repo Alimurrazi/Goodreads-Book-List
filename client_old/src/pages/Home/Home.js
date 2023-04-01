@@ -32,7 +32,7 @@ const Home = ({ auth, reseedDatabase }) => {
     <Layout>
       <div className="home-page">
         <h1>Home page</h1>
-        {!auth.isAuthenticated ? (
+        {/* {!auth.isAuthenticated ? (
           <div>
             <p>
               Welcome guest!{' '}
@@ -55,7 +55,7 @@ const Home = ({ auth, reseedDatabase }) => {
             <MessageForm />
           </>
         )}
-        <MessageList />
+        <MessageList /> */}
       </div>
     </Layout>
   );
