@@ -1,0 +1,52 @@
+.bookCover {
+  max-width: 150px;
+  max-height: 300px;
+  margin-bottom: 20px;
+}
+.card {
+  margin: 40px;
+}
+.rank {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+  min-width: 38px;
+  text-align: center;
+  background: #49bf3c;
+  position: relative;
+  padding: 4px 4px;
+  margin-right: 0.8rem;
+  box-sizing: border-box;
+  font-family: Roboto Condensed, sans-serif;
+}
+.author {
+  font-size: 16px;
+  font-style: italic;
+}
+.card-header {
+  display: flex;
+  flex-direction: row;
+  color: #d3d3d3;
+  font-size: 26px;
+  font-weight: 700;
+  font-family: Roboto Condensed, sans-serif;
+}
+.description {
+  margin-top: 20px;
+  margin-bottom: 2rem;
+  font-size: 17px;
+  font-weight: 400;
+  color: #d3d3d3;
+  font-family: Roboto, sans-serif;
+  line-height: 28px;
+}
+.meta-info {
+  color: white;
+  font-size: 18px;
+  font-weight: 400;
+  font-family: Roboto, sans-serif;
+  line-height: 34px;
+  margin-left: 60px;
+}
