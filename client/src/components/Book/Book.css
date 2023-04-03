@@ -24,6 +24,7 @@
 .author {
   font-size: 16px;
   font-style: italic;
+  color: cyan;
 }
 .card-header {
   display: flex;

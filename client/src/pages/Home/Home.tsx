@@ -1,10 +1,10 @@
 import React from 'react';
-import Book from '../../components/Book/Book';
+import BookList from '../../components/BookList/BookList';
 
 function Home() {
   return (
     <>
-      <Book></Book>
+      <BookList></BookList>
     </>
   );
 }
