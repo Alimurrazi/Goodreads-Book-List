@@ -51,3 +51,8 @@
   line-height: 34px;
   margin-left: 60px;
 }
+.genre-list {
+  gap: 8px;
+  text-decoration: underline;
+  color: #409970;
+}
