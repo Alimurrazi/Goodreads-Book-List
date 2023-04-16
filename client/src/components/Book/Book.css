@@ -53,6 +53,8 @@
 }
 .genre-list {
   gap: 8px;
-  text-decoration: underline;
   color: #409970;
+}
+.genre {
+  border-bottom: 2px solid;
 }

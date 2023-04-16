@@ -4,6 +4,8 @@ export interface Book {
   avgRating: number;
   ratings: number;
   firstPublished: number;
-  totalShelved: number;
   img: string;
+  detailsLink: string;
+  description: string;
+  genres: string[];
 }
