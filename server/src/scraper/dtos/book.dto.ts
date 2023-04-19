@@ -1,5 +1,5 @@
 export interface Book {
-  book: string;
+  title: string;
   author: string;
   avgRating: number;
   ratings: number;

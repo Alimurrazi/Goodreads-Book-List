@@ -30,14 +30,10 @@ class ScraperController {
           const fetchedBooks = $(selectedElem);
           fetchedBooks.each(async (index, element) => {
             if (fetchedBooks.length > 0) {
-              //  const elementText = $(element).text();
-              // const regex = /\(shelved (\d+) times/;
-              // const match = elementText.match(regex);
-              // const totalShelved = match ? parseInt(match[1]) : 0;
-
               const imgLink = $(element).children('a.leftAlignedImage').find('img').attr('src');
 
-              const bookName = $(element).children('a.bookTitle').text();
+              let bookName = $(element).children('a.bookTitle').text();
+              bookName = bookName.split(' (')[0];
               if (bookName !== '') {
                 const detailsPageLink = $(element).children('a.bookTitle').attr('href');
 
@@ -55,7 +51,7 @@ class ScraperController {
                 const ratingsMatch = ratingInfo.match(ratingsRegex);
                 const publishedMatch = ratingInfo.match(publishedRegex);
                 const book = {
-                  book: bookName,
+                  title: bookName,
                   author: author,
                   avgRating: avgRatingMatch ? parseFloat(avgRatingMatch[1]) : -1,
                   ratings: ratingsMatch ? parseInt(ratingsMatch[1].replace(/,/g, '')) : -1,
