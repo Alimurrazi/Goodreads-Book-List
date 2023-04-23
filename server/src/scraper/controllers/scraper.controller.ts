@@ -16,7 +16,7 @@ class ScraperController {
     const baseUrl = 'https://www.goodreads.com';
 
     //  for (let i = 1; i <= 25; i++) {
-    for (let i = 1; i <= 1; i++) {
+    for (let i = 1; i <= 2; i++) {
       const url = `https://www.goodreads.com/shelf/show/favourites?page=${i}`;
       //  const url = `https://www.goodreads.com/shelf/show/bengali?page=${i}`;
       const selectedElem = 'div.left';
@@ -78,35 +78,35 @@ class ScraperController {
 
     listedBooks.sort((a, b) => b.avgRating * b.ratings - a.avgRating * a.ratings);
 
-    // const selectedElem = 'div.BookPageMetadataSection';
-    // listedBooks.forEach((listedBook, index) => {
-    //   const url = listedBook.detailsLink;
-    //   const promise = axios(url)
-    //     .then((response) => {
-    //       const html_data = response.data;
-    //       const $ = cheerio.load(html_data);
-    //       const fetchedMetaData = $(selectedElem);
+    const selectedElem = 'div.BookPageMetadataSection';
+    listedBooks.forEach((listedBook, index) => {
+      const url = listedBook.detailsLink;
+      const promise = axios(url)
+        .then((response) => {
+          const html_data = response.data;
+          const $ = cheerio.load(html_data);
+          const fetchedMetaData = $(selectedElem);
 
-    //       const descriptionLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__description');
-    //       const descriptionSpan = $(descriptionLayout).find('span.Formatted')[0];
-    //       const descriptionContent = $(descriptionSpan).html();
-    //       if (descriptionContent) {
-    //         const description = descriptionContent.replace(/<i>(.*?)<\/i>/g, '');
-    //         listedBooks[index].description = description;
-    //       }
+          const descriptionLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__description');
+          const descriptionSpan = $(descriptionLayout).find('span.Formatted')[0];
+          const descriptionContent = $(descriptionSpan).html();
+          if (descriptionContent) {
+            const description = descriptionContent.replace(/<i>(.*?)<\/i>/g, '');
+            listedBooks[index].description = description;
+          }
 
-    //       const genreListLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__genres');
-    //       const genreSpans = $(genreListLayout).find('span.Button__labelItem');
-    //       for (let i = 0; i < genreSpans.length && i < 5; i++) {
-    //         listedBooks[index].genres.push($(genreSpans[i]).text());
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       log(error);
-    //     });
-    //   detailsPromises.push(promise);
-    // });
-    // await Promise.all(detailsPromises);
+          const genreListLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__genres');
+          const genreSpans = $(genreListLayout).find('span.Button__labelItem');
+          for (let i = 0; i < genreSpans.length && i < 5; i++) {
+            listedBooks[index].genres.push($(genreSpans[i]).text());
+          }
+        })
+        .catch((error) => {
+          log(error);
+        });
+      detailsPromises.push(promise);
+    });
+    await Promise.all(detailsPromises);
 
     await booksController.addBooks(listedBooks);
 
