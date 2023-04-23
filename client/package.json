@@ -12,6 +12,7 @@
     "@types/node": "^16.18.23",
     "@types/react": "^18.0.31",
     "@types/react-dom": "^18.0.11",
+    "axios": "^1.3.6",
     "decode-html": "^2.0.0",
     "html-react-parser": "^3.0.15",
     "react": "^18.2.0",
