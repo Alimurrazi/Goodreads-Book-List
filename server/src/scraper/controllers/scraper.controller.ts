@@ -78,14 +78,14 @@ class ScraperController {
 
     listedBooks.sort((a, b) => b.avgRating * b.ratings - a.avgRating * a.ratings);
 
-    const selectedElem = 'div.BookPageMetadataSection';
+    const metadataElem = 'div.BookPageMetadataSection';
     listedBooks.forEach((listedBook, index) => {
       const url = listedBook.detailsLink;
       const promise = axios(url)
         .then((response) => {
           const html_data = response.data;
           const $ = cheerio.load(html_data);
-          const fetchedMetaData = $(selectedElem);
+          const fetchedMetaData = $(metadataElem);
 
           const descriptionLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__description');
           const descriptionSpan = $(descriptionLayout).find('span.Formatted')[0];
