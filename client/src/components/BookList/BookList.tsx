@@ -5,12 +5,14 @@ import BookService from '../../services/Book.service';
 import { useEffect, useState } from 'react';
 import Pagination from '../Pagination/Pagination';
 
+const LIMIT = 25;
+
 function BookList() {
   const [books, setBooks] = useState<IBook[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    BookService.getBooks().then(
+    BookService.getBooks(currentPage).then(
       (res) => {
         setBooks(res.data);
       },
@@ -18,12 +20,12 @@ function BookList() {
         console.log(err);
       },
     );
-  }, []);
+  }, [currentPage]);
 
   return (
     <>
       {books.map((book, index) => (
-        <Book bookDetails={book} index={index} key={index}></Book>
+        <Book bookDetails={book} index={currentPage * LIMIT + index} key={index}></Book>
       ))}
       {books.length > 0 && <Pagination setCurrentPage={setCurrentPage}></Pagination>}
     </>
