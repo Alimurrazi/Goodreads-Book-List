@@ -6,15 +6,17 @@ import _ from 'lodash';
 const log: debug.IDebugger = debug('app:books-controller');
 
 class BooksController {
-  async addBooks(resources: Book[]) {
+  //  async addBooks(resources: Book[]) {
+  addBooks = async (resources: Book[]) => {
     return await booksService.addBooks(resources);
-  }
+  };
   async getAllBooks() {
     return await booksService.getAllBooks();
   }
-  async deleteAllBooks() {
+  //  async deleteAllBooks() {
+  deleteAllBooks = async () => {
     return await booksService.deleteAllBooks();
-  }
+  };
   async listBooks(req: express.Request, res: express.Response) {
     const page = req.query.page ? parseInt(req.query.page as string) : 0;
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
