@@ -20,6 +20,10 @@ class BookDao {
       .skip(limit * page)
       .exec();
   }
+
+  async deleteAllBooks() {
+    await bookModel.deleteMany();
+  }
 }
 
 export default new BookDao();

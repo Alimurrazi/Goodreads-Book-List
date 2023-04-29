@@ -5,6 +5,9 @@ class BooksService {
   async addBooks(resource: Book[]) {
     return bookDao.addBooks(resource);
   }
+  async deleteAllBooks() {
+    await bookDao.deleteAllBooks();
+  }
   async getAllBooks() {
     return bookDao.getAllBooks();
   }

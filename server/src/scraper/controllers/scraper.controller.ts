@@ -1,37 +1,31 @@
-import axios from 'axios';
 import express from 'express';
 import cheerio from 'cheerio';
-
 import debug from 'debug';
 import { Book } from '../../books/dtos/book.dto';
 import booksController from '../../books/controllers/books.controller';
-import puppeteer from 'puppeteer';
+import ScraperService from '../services/scraper.service';
 const log = debug('app:scraper-controller');
 
 class ScraperController {
   async syncContent(req: express.Request, res: express.Response) {
     const listedBooks: Book[] = [];
     const promises: Promise<void>[] = [];
-    const detailsPromises: Promise<void>[] = [];
     const baseUrl = 'https://www.goodreads.com';
 
     //  for (let i = 1; i <= 25; i++) {
     for (let i = 1; i <= 1; i++) {
-      const url = `https://www.goodreads.com/shelf/show/favourites?page=${i}`;
-      //  const url = `https://www.goodreads.com/shelf/show/bengali?page=${i}`;
       const selectedElem = 'div.left';
-      const promise = axios(url, {
-        headers: {
-          Cookie: req.body.authCookie,
-        },
-      })
+      const promise = ScraperService.getFavouritePageContents(i, req.body.authCookie)
         .then((response) => {
           const html_data = response.data;
           const $ = cheerio.load(html_data);
           const fetchedBooks = $(selectedElem);
           fetchedBooks.each(async (index, element) => {
             if (fetchedBooks.length > 0) {
-              const imgLink = $(element).children('a.leftAlignedImage').find('img').attr('src');
+              let imgLink = $(element).children('a.leftAlignedImage').find('img').attr('src');
+              if (imgLink) {
+                imgLink = imgLink.replace('._SY75_', '');
+              }
 
               let bookName = $(element).children('a.bookTitle').text();
               bookName = bookName.split(' (')[0];
@@ -81,13 +75,7 @@ class ScraperController {
     const metadataElem = 'div.BookPageMetadataSection';
 
     for (const [index, listedBook] of listedBooks.entries()) {
-      const url = listedBook.detailsLink;
-      const browser = await puppeteer.launch();
-      const page = await browser.newPage();
-      await page.goto(url);
-      await page.waitForSelector('.BookPage__gridContainer');
-      const html_data = await page.content();
-      await browser.close();
+      const html_data = await ScraperService.getDetailsPageContents(listedBook.detailsLink);
 
       const $ = cheerio.load(html_data);
       const fetchedMetaData = $(metadataElem);
@@ -107,7 +95,7 @@ class ScraperController {
       }
     }
 
-    // await booksController.addBooks(listedBooks);
+    await booksController.removeAndUpdateBooks(listedBooks);
 
     await res.status(200).send(listedBooks);
   }
