@@ -4,7 +4,6 @@ import cheerio from 'cheerio';
 
 import debug from 'debug';
 import { Book } from '../../books/dtos/book.dto';
-import { error } from 'winston';
 import booksController from '../../books/controllers/books.controller';
 import puppeteer from 'puppeteer';
 const log = debug('app:scraper-controller');
@@ -81,10 +80,6 @@ class ScraperController {
 
     const metadataElem = 'div.BookPageMetadataSection';
 
-    const listedBooks1: Book[] = [];
-    listedBooks1[0] = listedBooks[0];
-
-    //    listedBooks1.forEach(async (listedBook, index) => {
     for (const [index, listedBook] of listedBooks.entries()) {
       const url = listedBook.detailsLink;
       const browser = await puppeteer.launch();
@@ -110,39 +105,7 @@ class ScraperController {
       for (let i = 0; i < genreSpans.length && i < 5; i++) {
         listedBooks[index].genres.push($(genreSpans[i]).text());
       }
-
-      // const promise = await axios(url, {
-      //   maxContentLength: 50 * 1024 * 1024,
-      //   responseType: 'json',
-      // })
-      //   //  const promise = await fetch(url)
-      //   .then((response) => {
-      //     const html_data = response.data;
-      //     //    const html_data = response;
-      //     const $ = cheerio.load(html_data);
-      //     const fetchedMetaData = $(metadataElem);
-
-      //     const descriptionLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__description');
-      //     const descriptionSpan = $(descriptionLayout).find('span.Formatted')[0];
-      //     const descriptionContent = $(descriptionSpan).html();
-      //     if (descriptionContent) {
-      //       const description = descriptionContent.replace(/<i>(.*?)<\/i>/g, '');
-      //       listedBooks[index].description = description;
-      //     }
-
-      //     const genreListLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__genres');
-      //     const genreSpans = $(genreListLayout).find('span.Button__labelItem');
-      //     for (let i = 0; i < genreSpans.length && i < 5; i++) {
-      //       listedBooks[index].genres.push($(genreSpans[i]).text());
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     log(error);
-      //   });
-      //      detailsPromises.push(promise);
     }
-    //);
-    //  await Promise.all(detailsPromises);
 
     // await booksController.addBooks(listedBooks);
 
