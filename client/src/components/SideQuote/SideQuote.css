@@ -1,0 +1,27 @@
+#quote {
+  color: white;
+  top: 0px;
+  height: fit-content;
+  position: sticky;
+}
+blockquote {
+  font-family: Georgia, serif;
+  font-size: 30px;
+  font-style: italic;
+  position: relative;
+}
+blockquote:before {
+  content: '\201C';
+  font-size: 50px;
+  left: 0px;
+}
+cite {
+  font-size: 24px;
+  display: block;
+  margin-top: 3px;
+  margin-bottom: 10px;
+  margin-left: 60px;
+}
+cite:before {
+  content: '\2014 \2009';
+}

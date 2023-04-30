@@ -8,7 +8,6 @@ const log = debug('app:scraper-controller');
 const baseUrl = 'https://www.goodreads.com';
 
 class ScraperController {
-  //  async getListedBooksInfo(cookie: string) {
   getListedBooksInfo = async (cookie: string) => {
     const listedBooks: Book[] = [];
     //  for (let i = 1; i <= 25; i++) {
@@ -21,10 +20,7 @@ class ScraperController {
       const fetchedBooks = $(selectedElem);
       fetchedBooks.each(async (index, element) => {
         if (fetchedBooks.length > 0) {
-          let imgLink = $(element).children('a.leftAlignedImage').find('img').attr('src');
-          if (imgLink) {
-            imgLink = imgLink.replace('._SY75_', '');
-          }
+          const imgLink = $(element).children('a.leftAlignedImage').find('img').attr('src');
 
           let bookName = $(element).children('a.bookTitle').text();
           bookName = bookName.split(' (')[0];
@@ -66,39 +62,11 @@ class ScraperController {
     return listedBooks;
   };
 
-  // async syncContent(req: express.Request, res: express.Response) {
-  //   const listedBooks = await this.getListedBooksInfo(req.body.authCookie);
-  //   const metadataElem = 'div.BookPageMetadataSection';
-
-  //   for (const [index, listedBook] of listedBooks.entries()) {
-  //     const html_data = await ScraperService.getDetailsPageContents(listedBook.detailsLink);
-
-  //     const $ = cheerio.load(html_data);
-  //     const fetchedMetaData = $(metadataElem);
-
-  //     const descriptionLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__description');
-  //     const descriptionSpan = $(descriptionLayout).find('span.Formatted')[0];
-  //     const descriptionContent = $(descriptionSpan).html();
-  //     if (descriptionContent) {
-  //       const description = descriptionContent.replace(/<i>(.*?)<\/i>/g, '');
-  //       listedBooks[index].description = description;
-  //     }
-
-  //     const genreListLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__genres');
-  //     const genreSpans = $(genreListLayout).find('span.Button__labelItem');
-  //     for (let i = 0; i < genreSpans.length && i < 5; i++) {
-  //       listedBooks[index].genres.push($(genreSpans[i]).text());
-  //     }
-  //   }
-
-  //   await booksController.removeAndUpdateBooks(listedBooks);
-  //   await res.status(200).send(listedBooks);
-  // }
-
-  async syncContent(req: express.Request, res: express.Response) {
+  syncContent = async (req: express.Request, res: express.Response) => {
     try {
       const listedBooks = await this.getListedBooksInfo(req.body.authCookie);
       const metadataElem = 'div.BookPageMetadataSection';
+      const imgElem = 'div.BookPage__bookCover';
 
       await Promise.all(
         //        listedBooks.map(async (listedBook) => {
@@ -108,11 +76,16 @@ class ScraperController {
           const $ = cheerio.load(html_data);
           const fetchedMetaData = $(metadataElem);
 
+          const imgContainer = $(imgElem);
+          const imgLik = $(imgContainer).find('img.ResponsiveImage').attr('src');
+          listedBook.img = imgLik ? imgLik : '';
+
           const descriptionLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__description');
           const descriptionSpan = $(descriptionLayout).find('span.Formatted')[0];
           const descriptionContent = $(descriptionSpan).html();
           if (descriptionContent) {
             const description = descriptionContent.replace(/<i>(.*?)<\/i>/g, '');
+            description.replace(/Alternate Cover Edition ISBN: \d+ \(ISBN13: <a href="(.*?)">(\d+)<\/a>\)/, '');
             listedBook.description = description;
           }
 
@@ -127,9 +100,8 @@ class ScraperController {
       await booksController.removeAndUpdateBooks(listedBooks);
       await res.status(200).send(listedBooks);
     } catch (err: any) {
-      // log(err);
       return res.status(500).send(err.message);
     }
-  }
+  };
 }
 export default new ScraperController();

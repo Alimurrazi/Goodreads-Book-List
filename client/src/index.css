@@ -25,3 +25,6 @@ code {
 .justify-center {
   justify-content: center;
 }
+.w-60-p {
+  width: 60%;
+}

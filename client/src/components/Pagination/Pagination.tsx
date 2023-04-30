@@ -7,7 +7,7 @@ interface ISelected {
 }
 
 function Pagination({ setCurrentPage }: { setCurrentPage: React.Dispatch<React.SetStateAction<number>> }) {
-  const pageCount = 10;
+  const pageCount = 4;
 
   const handlePageClick = (event: ISelected) => {
     setCurrentPage(event.selected);
