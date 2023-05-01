@@ -1,10 +1,10 @@
 import axios from 'axios';
 import puppeteer from 'puppeteer';
-const FAVOURITE_PAGE_URL = `https://www.goodreads.com/shelf/show/favourites`;
+const SHELF_PAGE_URL = `https://www.goodreads.com/shelf/show/`;
 
 class ScraperService {
-  async getFavouritePageContents(index: number, cookie: string) {
-    const url = `${FAVOURITE_PAGE_URL}?page=${index}`;
+  async getShelfPageContents(keyword: string, index: number, cookie: string) {
+    const url = `${SHELF_PAGE_URL}${keyword}?page=${index}`;
     return await axios(url, {
       headers: {
         Cookie: cookie,

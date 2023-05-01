@@ -6,14 +6,12 @@ import _ from 'lodash';
 const log: debug.IDebugger = debug('app:books-controller');
 
 class BooksController {
-  //  async addBooks(resources: Book[]) {
   addBooks = async (resources: Book[]) => {
     return await booksService.addBooks(resources);
   };
-  async getAllBooks() {
+  getAllBooks = async () => {
     return await booksService.getAllBooks();
-  }
-  //  async deleteAllBooks() {
+  };
   deleteAllBooks = async () => {
     return await booksService.deleteAllBooks();
   };
@@ -32,5 +30,30 @@ class BooksController {
       throw error;
     }
   }
+
+  //  async compareAndUpdateBooks(updatedBooks: Book[]): Promise<void> {
+  compareAndUpdateBooks = async (updatedBooks: Book[]): Promise<void> => {
+    try {
+      // const filter = { $or: [{ id: 1 }, { id: 2 }] };
+      // const update1 = { $set: { description: 'work not hard' } };
+      // const update2 = { $set: { description: 'work very hard' } };
+      // const options = { multi: true };
+      // const promises = [];
+
+      // fetchedElements.forEach((element) => {
+      //   const update = element.id === 1 ? update1 : update2;
+      //   promises.push(MyModel.updateOne({ id: element.id }, update));
+      // });
+
+      const results = await Promise.all(promises);
+
+      const fetchedBooks = this.getAllBooks();
+      //      await this.deleteAllBooks();
+      await this.addBooks(updatedBooks);
+    } catch (error) {
+      log(error);
+      throw error;
+    }
+  };
 }
 export default new BooksController();

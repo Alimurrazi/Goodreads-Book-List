@@ -8,12 +8,12 @@ const log = debug('app:scraper-controller');
 const baseUrl = 'https://www.goodreads.com';
 
 class ScraperController {
-  getListedBooksInfo = async (cookie: string) => {
+  getListedBooksInfo = async (keyword: string, cookie: string) => {
     const listedBooks: Book[] = [];
     //  for (let i = 1; i <= 25; i++) {
     for (let i = 1; i <= 1; i++) {
       const selectedElem = 'div.left';
-      const response = await ScraperService.getFavouritePageContents(i, cookie);
+      const response = await ScraperService.getShelfPageContents(keyword, i, cookie);
 
       const html_data = response.data;
       const $ = cheerio.load(html_data);
@@ -64,40 +64,48 @@ class ScraperController {
 
   syncContent = async (req: express.Request, res: express.Response) => {
     try {
-      const listedBooks = await this.getListedBooksInfo(req.body.authCookie);
+      const listedBooks = await this.getListedBooksInfo(req.body.keyWord, req.body.authCookie);
       const metadataElem = 'div.BookPageMetadataSection';
       const imgElem = 'div.BookPage__bookCover';
 
       await Promise.all(
         //        listedBooks.map(async (listedBook) => {
         listedBooks.slice(0, 5).map(async (listedBook) => {
-          const html_data = await ScraperService.getDetailsPageContents(listedBook.detailsLink);
-
-          const $ = cheerio.load(html_data);
-          const fetchedMetaData = $(metadataElem);
-
-          const imgContainer = $(imgElem);
-          const imgLik = $(imgContainer).find('img.ResponsiveImage').attr('src');
-          listedBook.img = imgLik ? imgLik : '';
-
-          const descriptionLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__description');
-          const descriptionSpan = $(descriptionLayout).find('span.Formatted')[0];
-          const descriptionContent = $(descriptionSpan).html();
-          if (descriptionContent) {
-            const description = descriptionContent.replace(/<i>(.*?)<\/i>/g, '');
-            description.replace(/Alternate Cover Edition ISBN: \d+ \(ISBN13: <a href="(.*?)">(\d+)<\/a>\)/, '');
-            listedBook.description = description;
+          let html_data = '';
+          try {
+            html_data = await ScraperService.getDetailsPageContents(listedBook.detailsLink);
+          } catch (error) {
+            log(error);
           }
+          if (html_data) {
+            const $ = cheerio.load(html_data);
+            const fetchedMetaData = $(metadataElem);
 
-          const genreListLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__genres');
-          const genreSpans = $(genreListLayout).find('span.Button__labelItem');
-          for (let i = 0; i < genreSpans.length && i < 5; i++) {
-            listedBook.genres.push($(genreSpans[i]).text());
+            const imgContainer = $(imgElem);
+            const imgLik = $(imgContainer).find('img.ResponsiveImage').attr('src');
+            listedBook.img = imgLik ? imgLik : '';
+
+            const descriptionLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__description');
+            const descriptionSpan = $(descriptionLayout).find('span.Formatted')[0];
+            const descriptionContent = $(descriptionSpan).html();
+            if (descriptionContent) {
+              const description = descriptionContent.replace(/<i>(.*?)<\/i>/g, '');
+              description.replace(/Alternate Cover Edition ISBN: \d+ \(ISBN13: <a href="(.*?)">(\d+)<\/a>\)/, '');
+              listedBook.description = description;
+            }
+
+            // const genreListLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__genres');
+            // const genreSpans = $(genreListLayout).find('span.Button__labelItem');
+            // for (let i = 0; i < genreSpans.length && i < 5; i++) {
+            //   listedBook.genres.push($(genreSpans[i]).text());
+            // }
+
+            listedBook.genres.push(req.body.keyWord);
           }
         }),
       );
 
-      await booksController.removeAndUpdateBooks(listedBooks);
+      //      await booksController.removeAndUpdateBooks(listedBooks);
       await res.status(200).send(listedBooks);
     } catch (err: any) {
       return res.status(500).send(err.message);
