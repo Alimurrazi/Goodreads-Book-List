@@ -12,6 +12,15 @@ class BooksController {
   getAllBooks = async () => {
     return await booksService.getAllBooks();
   };
+  getBooksByGenre = async (req: express.Request, res: express.Response) => {
+    const genre = req.query.genre;
+    if (genre) {
+      const books = await booksService.getBooksByGenre(genre as string);
+      res.status(200).send(books);
+    } else {
+      res.status(500).send('Genre parameter missing');
+    }
+  };
   deleteAllBooks = async () => {
     return await booksService.deleteAllBooks();
   };
@@ -45,7 +54,7 @@ class BooksController {
       //   promises.push(MyModel.updateOne({ id: element.id }, update));
       // });
 
-      const results = await Promise.all(promises);
+      // const results = await Promise.all(promises);
 
       const fetchedBooks = this.getAllBooks();
       //      await this.deleteAllBooks();

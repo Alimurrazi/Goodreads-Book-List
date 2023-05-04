@@ -10,7 +10,8 @@ export class BooksRoutesConfig extends CommonRoutesConfig {
     return this.name;
   }
   configureRoutes(): express.Application {
-    this.app.route('/books').get(BooksController.listBooks);
+    //    this.app.route('/books').get(BooksController.listBooks);
+    this.app.route('/books').get(BooksController.getBooksByGenre);
     return this.app;
   }
 }

@@ -21,6 +21,10 @@ class BookDao {
       .exec();
   }
 
+  async getBooksByGenre(keyWord: string) {
+    return bookModel.find({ genres: { $in: [keyWord] } }).exec();
+  }
+
   async deleteAllBooks() {
     await bookModel.deleteMany();
   }

@@ -12,7 +12,8 @@ function BookList() {
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    BookService.getBooks(currentPage).then(
+    //    BookService.getBooksByGenre(currentPage).then(
+    BookService.getBooksByGenre('Fantasy').then(
       (res) => {
         setBooks(res.data);
       },

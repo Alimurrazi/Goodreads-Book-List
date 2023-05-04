@@ -4,15 +4,18 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { ProSidebarProvider } from 'react-pro-sidebar';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" Component={App} />
-      </Routes>
-    </BrowserRouter>
+    <ProSidebarProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" Component={App} />
+        </Routes>
+      </BrowserRouter>
+    </ProSidebarProvider>
   </React.StrictMode>,
 );
 

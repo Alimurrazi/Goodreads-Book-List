@@ -8,6 +8,11 @@ class BookService {
     const url = `${BOOK_API_BASE_URL}?limit=25&page=${pageNumber}`;
     return axios.get<IBook[]>(url);
   }
+
+  getBooksByGenre(genre: string) {
+    const url = `${BOOK_API_BASE_URL}?genre=${genre}`;
+    return axios.get<IBook[]>(url);
+  }
 }
 
 export default new BookService();

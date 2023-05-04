@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import BookList from '../../components/BookList/BookList';
 import SideQuote from '../../components/SideQuote/SideQuote';
+import Layout from '../../layout/Layout';
 
 function Home() {
   const genres = [
@@ -45,15 +46,16 @@ function Home() {
       keyword: 'thriller',
     },
   ];
-
+  const menuItems = genres.map((genre) => genre.title);
+  const [selectedMenuItem, setSelectedMenuItem] = useState('Favourites');
+  const selectMenuItem = (menuItem: string) => {
+    setSelectedMenuItem(menuItem);
+    console.log(menuItem);
+  };
   return (
     <>
-      <div className="flex-row">
-        <div>
-          {genres.map((genre) => (
-            <div key={genre.keyword}>{genre.title}</div>
-          ))}
-        </div>
+      <div className="flex-row h-100-p">
+        <Layout menuItems={menuItems} selectedMenuItem={selectedMenuItem} selectMenuItem={selectMenuItem}></Layout>
 
         <div className="flex-column w-60-p">
           <BookList></BookList>
