@@ -17,7 +17,7 @@ class ScraperService {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url);
-    await page.waitForSelector(gridContainerClass);
+    await page.waitForSelector(gridContainerClass, { timeout: 90000 });
     const html_data = await page.content();
     await browser.close();
     return html_data;

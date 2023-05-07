@@ -17,6 +17,12 @@ class BooksService {
   async list(limit: number, page: number) {
     return bookDao.getBooks(limit, page);
   }
+  async addBook(book: Book) {
+    return bookDao.addBook(book);
+  }
+  async updateBookOne(id: string, updateModel: Partial<Book>) {
+    return bookDao.updateBookOne(id, updateModel);
+  }
 }
 
 export default new BooksService();

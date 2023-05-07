@@ -49,7 +49,7 @@ class ScraperController {
               detailsLink: `${baseUrl}${detailsPageLink}`,
               img: imgLink ? imgLink : '',
               description: '',
-              genres: [],
+              genres: [keyword],
             };
             listedBooks.push(book);
           }
@@ -59,7 +59,7 @@ class ScraperController {
       });
     }
     listedBooks.sort((a, b) => b.avgRating * b.ratings - a.avgRating * a.ratings);
-    return listedBooks;
+    return listedBooks.slice(0, 10);
   };
 
   syncContent = async (req: express.Request, res: express.Response) => {
@@ -69,8 +69,7 @@ class ScraperController {
       const imgElem = 'div.BookPage__bookCover';
 
       await Promise.all(
-        //        listedBooks.map(async (listedBook) => {
-        listedBooks.slice(0, 5).map(async (listedBook) => {
+        listedBooks.map(async (listedBook) => {
           let html_data = '';
           try {
             html_data = await ScraperService.getDetailsPageContents(listedBook.detailsLink);
@@ -93,19 +92,11 @@ class ScraperController {
               description.replace(/Alternate Cover Edition ISBN: \d+ \(ISBN13: <a href="(.*?)">(\d+)<\/a>\)/, '');
               listedBook.description = description;
             }
-
-            // const genreListLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__genres');
-            // const genreSpans = $(genreListLayout).find('span.Button__labelItem');
-            // for (let i = 0; i < genreSpans.length && i < 5; i++) {
-            //   listedBook.genres.push($(genreSpans[i]).text());
-            // }
-
-            listedBook.genres.push(req.body.keyWord);
           }
         }),
       );
 
-      //      await booksController.removeAndUpdateBooks(listedBooks);
+      await booksController.compareAndUpdateBooks(listedBooks);
       await res.status(200).send(listedBooks);
     } catch (err: any) {
       return res.status(500).send(err.message);

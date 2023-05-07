@@ -9,8 +9,16 @@ class BookDao {
     return 'Saved successfully';
   }
 
+  async addBook(book: Book) {
+    await new bookModel(book).save();
+  }
+
+  async updateBookOne(id: string, updateModel: Partial<Book>) {
+    await bookModel.updateOne({ _id: id }, updateModel);
+  }
+
   async getAllBooks() {
-    return bookModel.find().exec;
+    return bookModel.find().exec();
   }
 
   async getBooks(limit = 50, page = 0) {
@@ -26,7 +34,7 @@ class BookDao {
   }
 
   async deleteAllBooks() {
-    await bookModel.deleteMany();
+    await bookModel.deleteMany().exec();
   }
 }
 

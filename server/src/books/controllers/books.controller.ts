@@ -40,25 +40,41 @@ class BooksController {
     }
   }
 
-  //  async compareAndUpdateBooks(updatedBooks: Book[]): Promise<void> {
   compareAndUpdateBooks = async (updatedBooks: Book[]): Promise<void> => {
     try {
-      // const filter = { $or: [{ id: 1 }, { id: 2 }] };
-      // const update1 = { $set: { description: 'work not hard' } };
-      // const update2 = { $set: { description: 'work very hard' } };
-      // const options = { multi: true };
-      // const promises = [];
+      const fetchedBooks = await this.getAllBooks();
 
-      // fetchedElements.forEach((element) => {
-      //   const update = element.id === 1 ? update1 : update2;
-      //   promises.push(MyModel.updateOne({ id: element.id }, update));
-      // });
+      const promises = updatedBooks.map(async (updatedBook) => {
+        const fetchedBook = fetchedBooks.find((fetchedBook) => fetchedBook.title == updatedBook.title);
 
-      // const results = await Promise.all(promises);
+        if (fetchedBook) {
+          const updateModel: Partial<Book> = {
+            description: fetchedBook.description,
+            avgRating: updatedBook.avgRating,
+            ratings: updatedBook.ratings,
+            genres: fetchedBook.genres || [],
+          };
 
-      const fetchedBooks = this.getAllBooks();
-      //      await this.deleteAllBooks();
-      await this.addBooks(updatedBooks);
+          if (updatedBook.description) {
+            updateModel.description = updatedBook.description;
+          }
+
+          if (updatedBook.genres.length > 0) {
+            const index = fetchedBook.genres.findIndex((genre) => genre === updatedBook.genres[0]);
+            if (index === -1) {
+              if (updateModel.genres) {
+                updateModel.genres.push(updatedBook.genres[0]);
+              }
+            }
+          }
+
+          await booksService.updateBookOne(fetchedBook._id, updateModel);
+        } else {
+          await booksService.addBook(updatedBook);
+        }
+      });
+
+      await Promise.all(promises);
     } catch (error) {
       log(error);
       throw error;

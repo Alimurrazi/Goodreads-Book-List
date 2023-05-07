@@ -5,15 +5,19 @@ import BookService from '../../services/Book.service';
 import { useEffect, useState } from 'react';
 import Pagination from '../Pagination/Pagination';
 
+interface IProps {
+  selectedGenre: string;
+}
+
 const LIMIT = 25;
 
-function BookList() {
+function BookList({ selectedGenre }: IProps) {
   const [books, setBooks] = useState<IBook[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
     //    BookService.getBooksByGenre(currentPage).then(
-    BookService.getBooksByGenre('Fantasy').then(
+    BookService.getBooksByGenre(selectedGenre).then(
       (res) => {
         setBooks(res.data);
       },
@@ -21,7 +25,7 @@ function BookList() {
         console.log(err);
       },
     );
-  }, [currentPage]);
+  }, [currentPage, selectedGenre]);
 
   return (
     <>

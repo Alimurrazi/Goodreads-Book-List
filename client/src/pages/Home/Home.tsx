@@ -7,7 +7,7 @@ function Home() {
   const genres = [
     {
       title: 'Adventure',
-      keyword: 'Adventure',
+      keyword: 'adventure',
     },
     {
       title: 'Classics',
@@ -46,19 +46,19 @@ function Home() {
       keyword: 'thriller',
     },
   ];
-  const menuItems = genres.map((genre) => genre.title);
-  const [selectedMenuItem, setSelectedMenuItem] = useState('Favourites');
-  const selectMenuItem = (menuItem: string) => {
-    setSelectedMenuItem(menuItem);
+  const menuItems = genres.map((genre) => genre.keyword);
+  const [selectedGenre, setSelectedGenre] = useState('favourites');
+  const changeGenre = (menuItem: string) => {
+    setSelectedGenre(menuItem);
     console.log(menuItem);
   };
   return (
     <>
       <div className="flex-row h-100-p">
-        <Layout menuItems={menuItems} selectedMenuItem={selectedMenuItem} selectMenuItem={selectMenuItem}></Layout>
+        <Layout menuItems={menuItems} selectedGenre={selectedGenre} changeGenre={changeGenre}></Layout>
 
         <div className="flex-column w-60-p">
-          <BookList></BookList>
+          <BookList selectedGenre={selectedGenre}></BookList>
         </div>
         <SideQuote></SideQuote>
       </div>

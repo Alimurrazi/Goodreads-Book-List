@@ -4,11 +4,11 @@ import { Sidebar, Menu, MenuItem, sidebarClasses } from 'react-pro-sidebar';
 
 interface IProps {
   menuItems: string[];
-  selectedMenuItem: string;
-  selectMenuItem: (menuItem: string) => void;
+  selectedGenre: string;
+  changeGenre: (menuItem: string) => void;
 }
 
-function Layout({ menuItems, selectedMenuItem, selectMenuItem }: IProps) {
+function Layout({ menuItems, selectedGenre, changeGenre }: IProps) {
   return (
     <>
       <div className="sidebar-container">
@@ -29,9 +29,9 @@ function Layout({ menuItems, selectedMenuItem, selectMenuItem }: IProps) {
             {menuItems.map((menuItem) => (
               <MenuItem
                 key={menuItem}
-                active={menuItem === selectedMenuItem ? true : false}
+                active={menuItem === selectedGenre ? true : false}
                 onClick={() => {
-                  selectMenuItem(menuItem);
+                  changeGenre(menuItem);
                 }}
               >
                 {menuItem}
