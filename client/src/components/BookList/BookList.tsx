@@ -32,7 +32,7 @@ function BookList({ selectedGenre }: IProps) {
       {books.map((book, index) => (
         <Book bookDetails={book} index={currentPage * LIMIT + index} key={index}></Book>
       ))}
-      {books.length > 0 && <Pagination setCurrentPage={setCurrentPage}></Pagination>}
+      {/* {books.length > 0 && <Pagination setCurrentPage={setCurrentPage}></Pagination>} */}
     </>
   );
 }
