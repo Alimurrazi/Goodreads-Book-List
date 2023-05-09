@@ -16,6 +16,13 @@ class BooksController {
     const genre = req.query.genre;
     if (genre) {
       const books = await booksService.getBooksByGenre(genre as string);
+      books.sort((a, b) => {
+        const aAvgRating = a.avgRating || 0;
+        const aRatings = a.ratings || 0;
+        const bAvgRating = b.avgRating || 0;
+        const bRatings = b.ratings || 0;
+        return bAvgRating * bRatings - aAvgRating * aRatings;
+      });
       res.status(200).send(books);
     } else {
       res.status(500).send('Genre parameter missing');
@@ -54,7 +61,7 @@ class BooksController {
             ratings: updatedBook.ratings,
             genres: fetchedBook.genres || [],
           };
-
+          //  let isUpdatedNeeded = false;
           if (updatedBook.description) {
             updateModel.description = updatedBook.description;
           }
@@ -67,10 +74,17 @@ class BooksController {
               }
             }
           }
-
-          await booksService.updateBookOne(fetchedBook._id, updateModel);
+          try {
+            await booksService.updateBookOne(fetchedBook._id, updateModel);
+          } catch (error) {
+            log(error);
+          }
         } else {
-          await booksService.addBook(updatedBook);
+          try {
+            await booksService.addBook(updatedBook);
+          } catch (error) {
+            log(error);
+          }
         }
       });
 

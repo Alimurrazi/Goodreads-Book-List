@@ -1,20 +1,22 @@
 import { Book } from '../dtos/book.dto';
 import bookModel from '../models/book.model';
+import shortid from 'shortid';
 
 class BookDao {
-  bookModel = new bookModel();
-
   async addBooks(listedBooks: Book[]) {
-    await bookModel.insertMany(listedBooks);
-    return 'Saved successfully';
+    return await bookModel.insertMany(listedBooks);
   }
 
-  async addBook(book: Book) {
-    await new bookModel(book).save();
+  async addBook(bookFields: Book) {
+    const newBookModel = new bookModel({
+      _id: shortid.generate(),
+      ...bookFields,
+    });
+    return await newBookModel.save();
   }
 
   async updateBookOne(id: string, updateModel: Partial<Book>) {
-    await bookModel.updateOne({ _id: id }, updateModel);
+    return await bookModel.updateOne({ _id: id }, updateModel);
   }
 
   async getAllBooks() {
@@ -34,7 +36,7 @@ class BookDao {
   }
 
   async deleteAllBooks() {
-    await bookModel.deleteMany().exec();
+    return await bookModel.deleteMany().exec();
   }
 }
 

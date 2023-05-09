@@ -58,8 +58,7 @@ class ScraperController {
         }
       });
     }
-    listedBooks.sort((a, b) => b.avgRating * b.ratings - a.avgRating * a.ratings);
-    return listedBooks.slice(0, 10);
+    return listedBooks.slice(0, 20);
   };
 
   syncContent = async (req: express.Request, res: express.Response) => {
@@ -97,7 +96,7 @@ class ScraperController {
       );
 
       await booksController.compareAndUpdateBooks(listedBooks);
-      await res.status(200).send(listedBooks);
+      await res.status(200).send('sync completed');
     } catch (err: any) {
       return res.status(500).send(err.message);
     }

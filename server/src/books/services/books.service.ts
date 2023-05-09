@@ -6,7 +6,7 @@ class BooksService {
     return bookDao.addBooks(resource);
   }
   async deleteAllBooks() {
-    await bookDao.deleteAllBooks();
+    return await bookDao.deleteAllBooks();
   }
   async getAllBooks() {
     return bookDao.getAllBooks();
