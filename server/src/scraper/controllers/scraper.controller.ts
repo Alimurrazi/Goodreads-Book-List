@@ -10,8 +10,7 @@ const baseUrl = 'https://www.goodreads.com';
 class ScraperController {
   getListedBooksInfo = async (keyword: string, cookie: string) => {
     const listedBooks: Book[] = [];
-    //  for (let i = 1; i <= 25; i++) {
-    for (let i = 1; i <= 1; i++) {
+    for (let i = 1; i <= 20; i++) {
       const selectedElem = 'div.left';
       const response = await ScraperService.getShelfPageContents(keyword, i, cookie);
 

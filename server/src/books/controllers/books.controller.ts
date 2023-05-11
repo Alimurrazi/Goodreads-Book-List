@@ -47,7 +47,7 @@ class BooksController {
     }
   }
 
-  compareAndUpdateBooks = async (updatedBooks: Book[]): Promise<void> => {
+  compareAndUpdateBooks = async (updatedBooks: Book[]): Promise<void[]> => {
     try {
       const fetchedBooks = await this.getAllBooks();
 
@@ -60,8 +60,8 @@ class BooksController {
             avgRating: updatedBook.avgRating,
             ratings: updatedBook.ratings,
             genres: fetchedBook.genres || [],
+            img: updatedBook.img,
           };
-          //  let isUpdatedNeeded = false;
           if (updatedBook.description) {
             updateModel.description = updatedBook.description;
           }
@@ -88,7 +88,7 @@ class BooksController {
         }
       });
 
-      await Promise.all(promises);
+      return await Promise.all(promises);
     } catch (error) {
       log(error);
       throw error;
