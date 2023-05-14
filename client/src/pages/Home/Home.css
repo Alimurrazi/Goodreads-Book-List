@@ -1,7 +1,8 @@
-.sidebar-container {
+.sidebar-broken-header {
+  padding: 16px 0px 0px 40px;
+  align-items: center;
   position: sticky;
-  height: 100vh;
-  top: 0px;
+  top: -1px;
 }
 .sidebar-title {
   margin: 0px;
@@ -13,11 +14,4 @@
   font-weight: 700;
   color: rgb(0, 152, 229);
   margin-left: 16px;
-}
-.sidebar-header {
-  padding: 20px 20px 0px 32px;
-  align-items: center;
-}
-.collapse-icon {
-  color: white;
 }

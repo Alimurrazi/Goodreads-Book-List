@@ -41,3 +41,6 @@ code {
 .h-100-vh {
   height: 100vh;
 }
+.ps-menu-button:hover {
+  color: darkslategray !important;
+}

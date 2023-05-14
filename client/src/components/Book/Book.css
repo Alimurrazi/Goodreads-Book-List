@@ -1,5 +1,5 @@
 .bookCover {
-  /* max-width: 150px; */
+  max-width: 210px;
   max-height: 300px;
   margin-bottom: 20px;
 }
@@ -15,7 +15,6 @@
   min-width: 38px;
   text-align: center;
   background: #49bf3c;
-  position: relative;
   padding: 4px 4px;
   margin-right: 0.8rem;
   box-sizing: border-box;
@@ -49,7 +48,6 @@
   font-weight: 400;
   font-family: Roboto, sans-serif;
   line-height: 34px;
-  margin-left: 60px;
 }
 .genre-list {
   gap: 8px;
@@ -57,4 +55,5 @@
 }
 .genre {
   border-bottom: 2px solid;
+  text-transform: capitalize;
 }

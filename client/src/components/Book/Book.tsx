@@ -4,6 +4,7 @@ import './Book.css';
 const decode = require('decode-html'); // decode-html has no import function
 import parse from 'html-react-parser';
 import { IBook } from './types';
+import { useMediaQuery } from 'react-responsive';
 
 interface IBookProps {
   bookDetails: IBook;
@@ -12,6 +13,8 @@ interface IBookProps {
 
 const Book = ({ bookDetails, index }: IBookProps) => {
   const decodedHtmlDescription = decode(bookDetails.description);
+  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
+
   return (
     <>
       <div className="card">
@@ -24,9 +27,12 @@ const Book = ({ bookDetails, index }: IBookProps) => {
             <div className="author">{bookDetails.author}</div>
           </div>
         </div>
-        <div className="flex-row">
-          <img className="bookCover" src={bookDetails.img} alt="Preview of a Word document: About Us - Overview" />
-          <div className="flex-column meta-info justify-center">
+        <div className={isTabletOrMobile ? 'flex-column' : 'flex-row'}>
+          <img className="bookCover" src={bookDetails.img} alt={bookDetails.title} />
+          <div
+            className="flex-column meta-info justify-center"
+            style={{ marginLeft: isTabletOrMobile ? '0px' : '60px' }}
+          >
             <span>First Published: {bookDetails.firstPublished}</span>
             <span>Rating: {bookDetails.avgRating}</span>
             <span>Votes: {bookDetails.ratings.toLocaleString()}</span>
