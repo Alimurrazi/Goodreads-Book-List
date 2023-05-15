@@ -31,8 +31,12 @@ class BookDao {
       .exec();
   }
 
-  async getBooksByGenre(keyWord: string) {
-    return bookModel.find({ genres: { $in: [keyWord] } }).exec();
+  async getBooksByGenre(keyWord: string, limit: number, page: number) {
+    return bookModel
+      .find({ genres: { $in: [keyWord] } })
+      .limit(limit)
+      .skip(limit * page)
+      .exec();
   }
 
   async deleteAllBooks() {

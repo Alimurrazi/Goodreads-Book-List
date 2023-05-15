@@ -16,16 +16,38 @@ function BookList({ selectedGenre }: IProps) {
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleScroll = () => {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    if (scrollTop + clientHeight >= scrollHeight) {
+      if (currentPage < 1) {
+        setCurrentPage(currentPage + 1);
+      }
+      console.log('reach the last section of the page');
+      // User has reached the bottom of the page, fetch more books
+      //  setDisplayedBooks(prevDisplayedBooks => prevDisplayedBooks + booksToFetch);
+    }
+  };
+
+  useEffect(() => {
+    setCurrentPage(0);
+    setBooks([]);
+  }, [selectedGenre]);
+
+  useEffect(() => {
     //    BookService.getBooksByGenre(currentPage).then(
-    BookService.getBooksByGenre(selectedGenre).then(
+    BookService.getBooksByGenre(selectedGenre, currentPage).then(
       (res) => {
-        setBooks(res.data);
+        setBooks([...books, ...res.data]);
       },
       (err) => {
         console.log(err);
       },
     );
-  }, [currentPage, selectedGenre]);
+  }, [currentPage]);
 
   return (
     <>

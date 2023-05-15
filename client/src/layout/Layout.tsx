@@ -22,7 +22,7 @@ function Layout({ menuItems, selectedGenre, changeGenre }: IProps) {
           rootStyles={{
             [`.${sidebarClasses.container}`]: {
               height: '100vh',
-              backgroundColor: 'black',
+              backgroundColor: '#0f0f0f',
             },
           }}
         >

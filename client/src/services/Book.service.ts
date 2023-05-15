@@ -9,8 +9,8 @@ class BookService {
     return axios.get<IBook[]>(url);
   }
 
-  getBooksByGenre(genre: string) {
-    const url = `${BOOK_API_BASE_URL}?genre=${genre}`;
+  getBooksByGenre(genre: string, pageNumber: number) {
+    const url = `${BOOK_API_BASE_URL}?genre=${genre}&page=${pageNumber}`;
     return axios.get<IBook[]>(url);
   }
 }

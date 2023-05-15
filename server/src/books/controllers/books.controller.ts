@@ -15,7 +15,9 @@ class BooksController {
   getBooksByGenre = async (req: express.Request, res: express.Response) => {
     const genre = req.query.genre;
     if (genre) {
-      const books = await booksService.getBooksByGenre(genre as string);
+      const page = req.query.page ? parseInt(req.query.page as string) : 0;
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+      const books = await booksService.getBooksByGenre(genre as string, limit, page);
       books.sort((a, b) => {
         const aAvgRating = a.avgRating || 0;
         const aRatings = a.ratings || 0;
