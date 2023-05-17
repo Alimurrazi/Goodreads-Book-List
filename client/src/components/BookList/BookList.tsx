@@ -3,13 +3,9 @@ import * as React from 'react';
 import { IBook } from '../Book/types';
 import BookService from '../../services/Book.service';
 import { useEffect, useState } from 'react';
-import Pagination from '../Pagination/Pagination';
-
 interface IProps {
   selectedGenre: string;
 }
-
-const LIMIT = 25;
 
 function BookList({ selectedGenre }: IProps) {
   const [books, setBooks] = useState<IBook[]>([]);
@@ -32,26 +28,24 @@ function BookList({ selectedGenre }: IProps) {
 
   useEffect(() => {
     setCurrentPage(0);
-    setBooks([]);
   }, [selectedGenre]);
 
   useEffect(() => {
     BookService.getBooksByGenre(selectedGenre, currentPage).then(
       (res) => {
-        setBooks([...books, ...res.data]);
+        currentPage === 0 ? setBooks(res.data) : setBooks([...books, ...res.data]);
       },
       (err) => {
         console.log(err);
       },
     );
-  }, [currentPage]);
+  }, [currentPage, selectedGenre]);
 
   return (
     <>
       {books.map((book, index) => (
         <Book bookDetails={book} index={index} key={index}></Book>
       ))}
-      {/* {books.length > 0 && <Pagination setCurrentPage={setCurrentPage}></Pagination>} */}
     </>
   );
 }

@@ -79,11 +79,11 @@ function Home() {
       <div className="flex-row h-100-p">
         <Layout menuItems={genres} selectedGenre={selectedGenre} changeGenre={changeGenre}></Layout>
 
-        <div className={isTabletOrMobile ? 'flex-column' : 'flex-row'}>
+        <div className={isTabletOrMobile ? 'flex-column' : 'flex-row w-100-p'}>
           <div className={isTabletOrMobile ? 'flex-column' : 'flex-column w-60-p'}>
             <BookList selectedGenre={selectedGenre}></BookList>
           </div>
-          <SideQuote></SideQuote>
+          <SideQuote selectedGenre={selectedGenre}></SideQuote>
         </div>
       </div>
     </>
