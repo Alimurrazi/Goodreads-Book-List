@@ -23,12 +23,10 @@ function BookList({ selectedGenre }: IProps) {
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
     if (scrollTop + clientHeight >= scrollHeight) {
+      // Max fetch 20 books
       if (currentPage < 1) {
         setCurrentPage(currentPage + 1);
       }
-      console.log('reach the last section of the page');
-      // User has reached the bottom of the page, fetch more books
-      //  setDisplayedBooks(prevDisplayedBooks => prevDisplayedBooks + booksToFetch);
     }
   };
 
@@ -38,7 +36,6 @@ function BookList({ selectedGenre }: IProps) {
   }, [selectedGenre]);
 
   useEffect(() => {
-    //    BookService.getBooksByGenre(currentPage).then(
     BookService.getBooksByGenre(selectedGenre, currentPage).then(
       (res) => {
         setBooks([...books, ...res.data]);
@@ -52,7 +49,7 @@ function BookList({ selectedGenre }: IProps) {
   return (
     <>
       {books.map((book, index) => (
-        <Book bookDetails={book} index={currentPage * LIMIT + index} key={index}></Book>
+        <Book bookDetails={book} index={index} key={index}></Book>
       ))}
       {/* {books.length > 0 && <Pagination setCurrentPage={setCurrentPage}></Pagination>} */}
     </>
