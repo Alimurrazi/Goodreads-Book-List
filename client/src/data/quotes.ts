@@ -17,9 +17,8 @@ const quotes: IQuote[] = [
     cite: 'Cicero',
   },
   {
-    quote:
-      'One glance at a book and you hear the voice of another person, perhaps someone dead for 1,000 years. To read is to voyage through time.',
-    cite: 'Carl Sagan',
+    quote: 'There is no friend as loyal as a book.',
+    cite: 'Ernest Hemingway',
   },
   {
     quote: 'We tell ourselves stories in order to live.',

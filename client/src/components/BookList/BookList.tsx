@@ -3,12 +3,14 @@ import * as React from 'react';
 import { IBook } from '../Book/types';
 import BookService from '../../services/Book.service';
 import { useEffect, useState } from 'react';
+import Spinner from 'react-spinkit';
 interface IProps {
   selectedGenre: string;
 }
 
 function BookList({ selectedGenre }: IProps) {
   const [books, setBooks] = useState<IBook[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
@@ -31,11 +33,14 @@ function BookList({ selectedGenre }: IProps) {
   }, [selectedGenre]);
 
   useEffect(() => {
+    setIsLoading(true);
     BookService.getBooksByGenre(selectedGenre, currentPage).then(
       (res) => {
         currentPage === 0 ? setBooks(res.data) : setBooks([...books, ...res.data]);
+        setIsLoading(false);
       },
       (err) => {
+        setIsLoading(false);
         console.log(err);
       },
     );
@@ -46,6 +51,11 @@ function BookList({ selectedGenre }: IProps) {
       {books.map((book, index) => (
         <Book bookDetails={book} index={index} key={index}></Book>
       ))}
+      {isLoading && (
+        <div className="w-100-p flex-row justify-center">
+          <Spinner name="circle" color="white" style={{ width: 100, height: 100 }} />
+        </div>
+      )}
     </>
   );
 }
