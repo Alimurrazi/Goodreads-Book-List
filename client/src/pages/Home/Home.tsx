@@ -2,64 +2,14 @@ import React, { useState } from 'react';
 import BookList from '../../components/BookList/BookList';
 import SideQuote from '../../components/SideQuote/SideQuote';
 import Layout from '../../layout/Layout';
-import {
-  faRunning,
-  faCompassDrafting,
-  faLandmark,
-  faDragon,
-  faStar,
-  faBook,
-  faSignature,
-  faPersonChalkboard,
-  faRobot,
-  faBars,
-} from '@fortawesome/free-solid-svg-icons';
-import { IMenuItems } from '../../types/types';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { useProSidebar } from 'react-pro-sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './Home.css';
 import { useMediaQuery } from 'react-responsive';
+import genres from '../../data/genres';
 
 function Home() {
-  const genres: IMenuItems[] = [
-    {
-      title: 'adventure',
-      icon: faCompassDrafting,
-    },
-    {
-      title: 'classics',
-      icon: faBook,
-    },
-    {
-      title: 'fantasy',
-      icon: faDragon,
-    },
-    {
-      title: 'favourites',
-      icon: faStar,
-    },
-    {
-      title: 'history',
-      icon: faLandmark,
-    },
-    {
-      title: 'memoir',
-      icon: faSignature,
-    },
-    {
-      title: 'non-fiction',
-      icon: faPersonChalkboard,
-    },
-    {
-      title: 'science-fiction',
-      icon: faRobot,
-    },
-    {
-      title: 'thriller',
-      icon: faRunning,
-    },
-  ];
-
   const [selectedGenre, setSelectedGenre] = useState('favourites');
   const changeGenre = (menuItem: string) => {
     setSelectedGenre(menuItem);
