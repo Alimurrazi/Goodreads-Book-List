@@ -20,6 +20,14 @@ class ScraperController {
       fetchedBooks.each(async (index, element) => {
         if (fetchedBooks.length > 0) {
           const imgLink = $(element).children('a.leftAlignedImage').find('img').attr('src');
+          let formatedImgUrl = imgLink;
+          if (imgLink) {
+            const firstPartConst = 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/';
+            const [_, firstPart] = imgLink.split(firstPartConst);
+            const [firstId, ...lastPart] = firstPart.split('/');
+            const [secondId] = lastPart[0].split('.');
+            formatedImgUrl = `${firstPartConst}${firstId}/${secondId}.jpg`;
+          }
 
           let bookName = $(element).children('a.bookTitle').text();
           bookName = bookName.split(' (')[0];
@@ -46,7 +54,7 @@ class ScraperController {
               ratings: ratingsMatch ? parseInt(ratingsMatch[1].replace(/,/g, '')) : -1,
               firstPublished: publishedMatch ? parseInt(publishedMatch[1]) : -1,
               detailsLink: `${baseUrl}${detailsPageLink}`,
-              img: imgLink ? imgLink : '',
+              img: formatedImgUrl ? formatedImgUrl : '',
               description: '',
               genres: [keyword],
             };
@@ -64,7 +72,7 @@ class ScraperController {
     try {
       const listedBooks = await this.getListedBooksInfo(req.body.keyWord, req.body.authCookie);
       const metadataElem = 'div.BookPageMetadataSection';
-      const imgElem = 'div.BookPage__bookCover';
+      //  const imgElem = 'div.BookPage__bookCover';
 
       await Promise.all(
         listedBooks.map(async (listedBook) => {
@@ -78,9 +86,9 @@ class ScraperController {
             const $ = cheerio.load(html_data);
             const fetchedMetaData = $(metadataElem);
 
-            const imgContainer = $(imgElem);
-            const imgLik = $(imgContainer).find('img.ResponsiveImage').attr('src');
-            listedBook.img = imgLik ? imgLik : '';
+            //  const imgContainer = $(imgElem);
+            //  const imgLik = $(imgContainer).find('img.ResponsiveImage').attr('src');
+            //  listedBook.img = imgLik ? imgLik : '';
 
             const descriptionLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__description');
             const descriptionSpan = $(descriptionLayout).find('span.Formatted')[0];

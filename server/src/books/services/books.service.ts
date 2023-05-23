@@ -21,7 +21,7 @@ class BooksService {
     return bookDao.addBook(book);
   }
   async updateBookOne(id: string, updateModel: Partial<Book>) {
-    return bookDao.updateBookOne(id, updateModel);
+    return await bookDao.updateBookOne(id, updateModel);
   }
 }
 
