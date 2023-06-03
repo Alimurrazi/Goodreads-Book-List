@@ -17,7 +17,7 @@ class BooksController {
     if (genre) {
       const page = req.query.page ? parseInt(req.query.page as string) : 0;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
-      const books = await booksService.getBooksByGenre(genre as string, limit, page);
+      let books = await booksService.getBooksByGenre(genre as string);
       books.sort((a, b) => {
         const aAvgRating = a.avgRating || 0;
         const aRatings = a.ratings || 0;
@@ -25,6 +25,7 @@ class BooksController {
         const bRatings = b.ratings || 0;
         return bAvgRating * bRatings - aAvgRating * aRatings;
       });
+      books = books.slice(limit * page, limit * page + limit);
       res.status(200).send(books);
     } else {
       res.status(500).send('Genre parameter missing');
