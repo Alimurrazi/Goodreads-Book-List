@@ -50,6 +50,51 @@ class BooksController {
     }
   }
 
+  compareAndUpdateExistingBookBySync = async (updatedBook: Book) => {
+    try {
+      const fetchedBook = await booksService.getBooksByTitle(updatedBook.title);
+      const updateModel = this.restructureUpdateModel(fetchedBook, updatedBook);
+      // need to change any type
+      if (fetchedBook && (fetchedBook as any)._id) {
+        await booksService.updateBookOne((fetchedBook as any)._id, updateModel);
+      }
+    } catch (error) {
+      log(error);
+    }
+  };
+
+  // Need to change fetchedBook type, need to update booksService.getBooksByTitle
+  restructureUpdateModel = (fetchedBook: Partial<Book> | any, updatedBook: Book) => {
+    let description = fetchedBook.description;
+    if (fetchedBook.description?.length && updatedBook.description.length) {
+      description =
+        fetchedBook.description.length > updatedBook.description.length
+          ? fetchedBook.description
+          : updatedBook.description;
+    }
+
+    const updateModel: Partial<Book> = {
+      description: description,
+      avgRating: updatedBook.avgRating,
+      ratings: updatedBook.ratings,
+      genres: fetchedBook.genres || [],
+      img: updatedBook.img,
+    };
+    if (updatedBook.description) {
+      updateModel.description = updatedBook.description;
+    }
+
+    if (updatedBook.genres.length > 0 && fetchedBook.genres) {
+      const index = fetchedBook.genres.findIndex((genre: string) => genre === updatedBook.genres[0]);
+      if (index === -1) {
+        if (updateModel.genres) {
+          updateModel.genres.push(updatedBook.genres[0]);
+        }
+      }
+    }
+    return updateModel;
+  };
+
   compareAndUpdateBooks = async (updatedBooks: Book[]): Promise<void[]> => {
     try {
       const fetchedBooks = await this.getAllBooks();
@@ -58,25 +103,36 @@ class BooksController {
         const fetchedBook = fetchedBooks.find((fetchedBook) => fetchedBook.title == updatedBook.title);
 
         if (fetchedBook) {
-          const updateModel: Partial<Book> = {
-            description: fetchedBook.description,
-            avgRating: updatedBook.avgRating,
-            ratings: updatedBook.ratings,
-            genres: fetchedBook.genres || [],
-            img: updatedBook.img,
-          };
-          if (updatedBook.description) {
-            updateModel.description = updatedBook.description;
-          }
+          const updateModel = this.restructureUpdateModel(fetchedBook, updatedBook);
 
-          if (updatedBook.genres.length > 0) {
-            const index = fetchedBook.genres.findIndex((genre) => genre === updatedBook.genres[0]);
-            if (index === -1) {
-              if (updateModel.genres) {
-                updateModel.genres.push(updatedBook.genres[0]);
-              }
-            }
-          }
+          // let description = fetchedBook.description;
+          // if (fetchedBook.description?.length && updatedBook.description.length) {
+          //   description =
+          //     fetchedBook.description.length > updatedBook.description.length
+          //       ? fetchedBook.description
+          //       : updatedBook.description;
+          // }
+
+          // const updateModel: Partial<Book> = {
+          //   description: description,
+          //   avgRating: updatedBook.avgRating,
+          //   ratings: updatedBook.ratings,
+          //   genres: fetchedBook.genres || [],
+          //   img: updatedBook.img,
+          // };
+          // if (updatedBook.description) {
+          //   updateModel.description = updatedBook.description;
+          // }
+
+          // if (updatedBook.genres.length > 0) {
+          //   const index = fetchedBook.genres.findIndex((genre) => genre === updatedBook.genres[0]);
+          //   if (index === -1) {
+          //     if (updateModel.genres) {
+          //       updateModel.genres.push(updatedBook.genres[0]);
+          //     }
+          //   }
+          // }
+
           try {
             await booksService.updateBookOne(fetchedBook._id, updateModel);
           } catch (error) {

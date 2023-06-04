@@ -14,6 +14,9 @@ class BooksService {
   async getBooksByGenre(keyword: string) {
     return bookDao.getBooksByGenre(keyword);
   }
+  async getBookById(id: string) {
+    return bookDao.getBookById(id);
+  }
   async list(limit: number, page: number) {
     return bookDao.getBooks(limit, page);
   }

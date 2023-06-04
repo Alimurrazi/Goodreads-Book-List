@@ -1,6 +1,7 @@
 import { Book } from '../dtos/book.dto';
 import bookModel from '../models/book.model';
 import shortid from 'shortid';
+import { Document } from 'mongoose';
 
 class BookDao {
   async addBooks(listedBooks: Book[]) {
@@ -33,6 +34,10 @@ class BookDao {
 
   async getBooksByGenre(keyWord: string) {
     return bookModel.find({ genres: { $in: [keyWord] } }).exec();
+  }
+
+  async getBookById(id: string) {
+    return bookModel.find({ _id: id }).exec();
   }
 
   async deleteAllBooks() {

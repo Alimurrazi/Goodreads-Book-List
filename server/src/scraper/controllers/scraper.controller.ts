@@ -4,6 +4,7 @@ import debug from 'debug';
 import { Book } from '../../books/dtos/book.dto';
 import booksController from '../../books/controllers/books.controller';
 import ScraperService from '../services/scraper.service';
+import booksService from '../../books/services/books.service';
 const log = debug('app:scraper-controller');
 const baseUrl = 'https://www.goodreads.com';
 
@@ -68,11 +69,38 @@ class ScraperController {
     return listedBooks.slice(0, 20);
   };
 
+  getSingleDetailsPageContent = async (id: string) => {
+    const metadataElem = 'div.BookPageMetadataSection';
+    try {
+      const listedBook = await booksService.getBookById(id);
+      let html_data = '';
+      try {
+        html_data = await ScraperService.getDetailsPageContents(listedBook.detailsLink);
+      } catch (error) {
+        log(error);
+      }
+      if (html_data) {
+        const $ = cheerio.load(html_data);
+        const fetchedMetaData = $(metadataElem);
+
+        const descriptionLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__description');
+        const descriptionSpan = $(descriptionLayout).find('span.Formatted')[0];
+        const descriptionContent = $(descriptionSpan).html();
+        if (descriptionContent) {
+          const description = descriptionContent.replace(/<i>(.*?)<\/i>/g, '');
+          description.replace(/Alternate Cover Edition ISBN: \d+ \(ISBN13: <a href="(.*?)">(\d+)<\/a>\)/, '');
+          listedBook.description = description;
+        }
+      }
+    } catch (error) {
+      log(error);
+    }
+  };
+
   syncContent = async (req: express.Request, res: express.Response) => {
     try {
       const listedBooks = await this.getListedBooksInfo(req.body.keyWord, req.body.authCookie);
       const metadataElem = 'div.BookPageMetadataSection';
-      //  const imgElem = 'div.BookPage__bookCover';
 
       await Promise.all(
         listedBooks.map(async (listedBook) => {
@@ -85,10 +113,6 @@ class ScraperController {
           if (html_data) {
             const $ = cheerio.load(html_data);
             const fetchedMetaData = $(metadataElem);
-
-            //  const imgContainer = $(imgElem);
-            //  const imgLik = $(imgContainer).find('img.ResponsiveImage').attr('src');
-            //  listedBook.img = imgLik ? imgLik : '';
 
             const descriptionLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__description');
             const descriptionSpan = $(descriptionLayout).find('span.Formatted')[0];
