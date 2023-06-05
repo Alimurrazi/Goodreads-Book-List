@@ -50,13 +50,13 @@ class BooksController {
     }
   }
 
-  compareAndUpdateExistingBookBySync = async (updatedBook: Book) => {
+  compareAndUpdateExistingBookBySync = async (fetchedBook: any, updatedBook: Partial<Book>) => {
     try {
-      const fetchedBook = await booksService.getBooksByTitle(updatedBook.title);
-      const updateModel = this.restructureUpdateModel(fetchedBook, updatedBook);
+      //  const fetchedBook = await booksService.getBookById(updatedBook.title);
+      //  const updateModel = this.restructureUpdateModel(fetchedBook, updatedBook);
       // need to change any type
       if (fetchedBook && (fetchedBook as any)._id) {
-        await booksService.updateBookOne((fetchedBook as any)._id, updateModel);
+        await booksService.updateBookOne((fetchedBook as any)._id, updatedBook);
       }
     } catch (error) {
       log(error);

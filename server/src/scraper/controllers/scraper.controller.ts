@@ -69,10 +69,9 @@ class ScraperController {
     return listedBooks.slice(0, 20);
   };
 
-  getSingleDetailsPageContent = async (id: string) => {
+  getSingleDetailsPageContent = async (listedBook: Book) => {
     const metadataElem = 'div.BookPageMetadataSection';
     try {
-      const listedBook = await booksService.getBookById(id);
       let html_data = '';
       try {
         html_data = await ScraperService.getDetailsPageContents(listedBook.detailsLink);
@@ -95,39 +94,39 @@ class ScraperController {
     } catch (error) {
       log(error);
     }
+    return listedBook;
   };
 
   syncContent = async (req: express.Request, res: express.Response) => {
     try {
       const listedBooks = await this.getListedBooksInfo(req.body.keyWord, req.body.authCookie);
-      const metadataElem = 'div.BookPageMetadataSection';
 
       await Promise.all(
         listedBooks.map(async (listedBook) => {
-          let html_data = '';
-          try {
-            html_data = await ScraperService.getDetailsPageContents(listedBook.detailsLink);
-          } catch (error) {
-            log(error);
-          }
-          if (html_data) {
-            const $ = cheerio.load(html_data);
-            const fetchedMetaData = $(metadataElem);
-
-            const descriptionLayout = $(fetchedMetaData).children('div.BookPageMetadataSection__description');
-            const descriptionSpan = $(descriptionLayout).find('span.Formatted')[0];
-            const descriptionContent = $(descriptionSpan).html();
-            if (descriptionContent) {
-              const description = descriptionContent.replace(/<i>(.*?)<\/i>/g, '');
-              description.replace(/Alternate Cover Edition ISBN: \d+ \(ISBN13: <a href="(.*?)">(\d+)<\/a>\)/, '');
-              listedBook.description = description;
-            }
-          }
+          return await this.getSingleDetailsPageContent(listedBook);
         }),
       );
 
       await booksController.compareAndUpdateBooks(listedBooks);
       await res.status(200).send('sync completed');
+    } catch (err: any) {
+      return res.status(500).send(err.message);
+    }
+  };
+
+  syncSingleBookContent = async (req: express.Request, res: express.Response) => {
+    try {
+      let fetchedBook = booksService.getBookById(req.body.id);
+      const updatedBook = await this.getSingleDetailsPageContent(fetchedBook);
+      if (fetchedBook.description.length && updatedBook.description.length) {
+        updatedBook.description =
+          fetchedBook.description.length > updatedBook.description.length
+            ? fetchedBook.description
+            : updatedBook.description;
+      }
+
+      await booksController.compareAndUpdateExistingBookBySync(fetchedBook, updatedBook);
+      await res.status(200).send('single book sync completed');
     } catch (err: any) {
       return res.status(500).send(err.message);
     }
