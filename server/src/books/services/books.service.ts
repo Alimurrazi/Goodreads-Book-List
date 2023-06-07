@@ -1,8 +1,8 @@
 import bookDao from '../daos/book.dao';
-import { Book } from '../dtos/book.dto';
+import { IBook } from '../dtos/book.dto';
 
 class BooksService {
-  async addBooks(resource: Book[]) {
+  async addBooks(resource: IBook[]) {
     return bookDao.addBooks(resource);
   }
   async deleteAllBooks() {
@@ -20,10 +20,10 @@ class BooksService {
   async list(limit: number, page: number) {
     return bookDao.getBooks(limit, page);
   }
-  async addBook(book: Book) {
+  async addBook(book: IBook) {
     return bookDao.addBook(book);
   }
-  async updateBookOne(id: string, updateModel: Partial<Book>) {
+  async updateBookOne(id: string, updateModel: Partial<IBook>) {
     return await bookDao.updateBookOne(id, updateModel);
   }
 }

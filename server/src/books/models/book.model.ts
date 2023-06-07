@@ -1,6 +1,5 @@
-import mongooseService from '../../common/services/mongoose.service';
-const mongoose = mongooseService.getMongoose();
-const Schema = mongoose.Schema;
+import mongoose, { Schema } from 'mongoose';
+import { IBook } from '../dtos/book.dto';
 const bookSchema = new Schema(
   {
     _id: String,
@@ -16,5 +15,5 @@ const bookSchema = new Schema(
   },
   { id: false },
 );
-const bookModel = mongoose.model('Book', bookSchema);
-export default bookModel;
+
+export default mongoose.model<IBook>('Book', bookSchema);

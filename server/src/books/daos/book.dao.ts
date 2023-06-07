@@ -1,14 +1,14 @@
-import { Book } from '../dtos/book.dto';
+import { IBook } from '../dtos/book.dto';
 import bookModel from '../models/book.model';
 import shortid from 'shortid';
 import { Document } from 'mongoose';
 
 class BookDao {
-  async addBooks(listedBooks: Book[]) {
+  async addBooks(listedBooks: IBook[]) {
     return await bookModel.insertMany(listedBooks);
   }
 
-  async addBook(bookFields: Book) {
+  async addBook(bookFields: Partial<IBook>) {
     const newBookModel = new bookModel({
       _id: shortid.generate(),
       ...bookFields,
@@ -16,11 +16,11 @@ class BookDao {
     return await newBookModel.save();
   }
 
-  async updateBookOne(id: string, updateModel: Partial<Book>) {
+  async updateBookOne(id: string, updateModel: Partial<IBook>) {
     return await bookModel.updateOne({ _id: id }, updateModel);
   }
 
-  async getAllBooks() {
+  async getAllBooks(): Promise<IBook[]> {
     return bookModel.find().exec();
   }
 
@@ -36,8 +36,12 @@ class BookDao {
     return bookModel.find({ genres: { $in: [keyWord] } }).exec();
   }
 
-  async getBookById(id: string) {
-    return bookModel.find({ _id: id }).exec();
+  async getBookById(id: string): Promise<IBook | null> {
+    const book = await bookModel.findOne({ _id: id }).exec();
+    if (!book) {
+      return null;
+    }
+    return book;
   }
 
   async deleteAllBooks() {

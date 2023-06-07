@@ -1,12 +1,12 @@
 import express from 'express';
 import booksService from '../services/books.service';
-import { Book } from '../dtos/book.dto';
+import { IBook } from '../dtos/book.dto';
 import debug from 'debug';
 import _ from 'lodash';
 const log: debug.IDebugger = debug('app:books-controller');
 
 class BooksController {
-  addBooks = async (resources: Book[]) => {
+  addBooks = async (resources: IBook[]) => {
     return await booksService.addBooks(resources);
   };
   getAllBooks = async () => {
@@ -40,7 +40,7 @@ class BooksController {
     const books = await booksService.list(limit, page);
     res.status(200).send(books);
   }
-  async removeAndUpdateBooks(updatedBooks: Book[]): Promise<void> {
+  async removeAndUpdateBooks(updatedBooks: IBook[]): Promise<void> {
     try {
       await this.deleteAllBooks();
       await this.addBooks(updatedBooks);
@@ -50,7 +50,7 @@ class BooksController {
     }
   }
 
-  compareAndUpdateExistingBookBySync = async (fetchedBook: any, updatedBook: Partial<Book>) => {
+  compareAndUpdateExistingBookBySync = async (fetchedBook: any, updatedBook: Partial<IBook>) => {
     try {
       //  const fetchedBook = await booksService.getBookById(updatedBook.title);
       //  const updateModel = this.restructureUpdateModel(fetchedBook, updatedBook);
@@ -64,7 +64,7 @@ class BooksController {
   };
 
   // Need to change fetchedBook type, need to update booksService.getBooksByTitle
-  restructureUpdateModel = (fetchedBook: Partial<Book> | any, updatedBook: Book) => {
+  restructureUpdateModel = (fetchedBook: Partial<IBook> | any, updatedBook: IBook) => {
     let description = fetchedBook.description;
     if (fetchedBook.description?.length && updatedBook.description.length) {
       description =
@@ -73,7 +73,7 @@ class BooksController {
           : updatedBook.description;
     }
 
-    const updateModel: Partial<Book> = {
+    const updateModel: Partial<IBook> = {
       description: description,
       avgRating: updatedBook.avgRating,
       ratings: updatedBook.ratings,
@@ -95,7 +95,7 @@ class BooksController {
     return updateModel;
   };
 
-  compareAndUpdateBooks = async (updatedBooks: Book[]): Promise<void[]> => {
+  compareAndUpdateBooks = async (updatedBooks: IBook[]): Promise<void[]> => {
     try {
       const fetchedBooks = await this.getAllBooks();
 

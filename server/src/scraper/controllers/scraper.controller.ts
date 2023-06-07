@@ -1,7 +1,7 @@
 import express from 'express';
 import cheerio from 'cheerio';
 import debug from 'debug';
-import { Book } from '../../books/dtos/book.dto';
+import { IBook } from '../../books/dtos/book.dto';
 import booksController from '../../books/controllers/books.controller';
 import ScraperService from '../services/scraper.service';
 import booksService from '../../books/services/books.service';
@@ -10,7 +10,7 @@ const baseUrl = 'https://www.goodreads.com';
 
 class ScraperController {
   getListedBooksInfo = async (keyword: string, cookie: string) => {
-    const listedBooks: Book[] = [];
+    const listedBooks: any[] = [];
     for (let i = 1; i <= 20; i++) {
       const selectedElem = 'div.left';
       const response = await ScraperService.getShelfPageContents(keyword, i, cookie);
@@ -69,7 +69,7 @@ class ScraperController {
     return listedBooks.slice(0, 20);
   };
 
-  getSingleDetailsPageContent = async (listedBook: Book) => {
+  getSingleDetailsPageContent = async (listedBook: IBook) => {
     const metadataElem = 'div.BookPageMetadataSection';
     try {
       let html_data = '';
@@ -116,17 +116,19 @@ class ScraperController {
 
   syncSingleBookContent = async (req: express.Request, res: express.Response) => {
     try {
-      let fetchedBook = booksService.getBookById(req.body.id);
-      const updatedBook = await this.getSingleDetailsPageContent(fetchedBook);
-      if (fetchedBook.description.length && updatedBook.description.length) {
-        updatedBook.description =
-          fetchedBook.description.length > updatedBook.description.length
-            ? fetchedBook.description
-            : updatedBook.description;
-      }
+      const fetchedBook = await booksService.getBookById(req.body.id);
+      if (fetchedBook) {
+        const updatedBook = await this.getSingleDetailsPageContent(fetchedBook);
+        if (fetchedBook.description.length && updatedBook.description.length) {
+          updatedBook.description =
+            fetchedBook.description.length > updatedBook.description.length
+              ? fetchedBook.description
+              : updatedBook.description;
+        }
 
-      await booksController.compareAndUpdateExistingBookBySync(fetchedBook, updatedBook);
-      await res.status(200).send('single book sync completed');
+        await booksController.compareAndUpdateExistingBookBySync(fetchedBook, updatedBook);
+        await res.status(200).send('single book sync completed');
+      }
     } catch (err: any) {
       return res.status(500).send(err.message);
     }

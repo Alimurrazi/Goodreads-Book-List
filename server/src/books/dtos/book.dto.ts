@@ -1,4 +1,5 @@
-export interface Book {
+export interface IBook extends Document {
+  _id: string;
   title: string;
   author: string;
   avgRating: number;
