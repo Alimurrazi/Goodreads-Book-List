@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { IBook } from '../dtos/book.dto';
+
 const bookSchema = new Schema(
   {
     _id: String,

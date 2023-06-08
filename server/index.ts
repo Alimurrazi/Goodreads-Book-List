@@ -8,6 +8,7 @@ import debug from 'debug';
 import cors from 'cors';
 import { ScraperRoutesConfig } from './src/scraper/scraper.routes.config';
 import { BooksRoutesConfig } from './src/books/book.routes.config';
+import mongooseService from './src/common/services/mongoose.service';
 
 const app = express();
 const server = http.createServer(app);
@@ -18,6 +19,7 @@ const debugLog = debug('app');
 
 app.use(express.json());
 app.use(cors());
+mongooseService.connectWithRetry();
 
 // here we are preparing the expressWinston logging middleware configuration,
 // which will automatically log all HTTP requests handled by Express.js
