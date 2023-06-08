@@ -44,7 +44,8 @@ function BookList({ selectedGenre }: IProps) {
         console.log(err);
       },
     );
-  }, [currentPage, selectedGenre]);
+    //  }, [currentPage, selectedGenre]);
+  }, [currentPage]);
 
   return (
     <>
