@@ -29,6 +29,7 @@ function BookList({ selectedGenre }: IProps) {
   };
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     setCurrentPage(0);
   }, [selectedGenre]);
 

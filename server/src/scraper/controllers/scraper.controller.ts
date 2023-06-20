@@ -23,11 +23,7 @@ class ScraperController {
           const imgLink = $(element).children('a.leftAlignedImage').find('img').attr('src');
           let formatedImgUrl = imgLink;
           if (imgLink) {
-            const firstPartConst = 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/';
-            const [_, firstPart] = imgLink.split(firstPartConst);
-            const [firstId, ...lastPart] = firstPart.split('/');
-            const [secondId] = lastPart[0].split('.');
-            formatedImgUrl = `${firstPartConst}${firstId}/${secondId}.jpg`;
+            formatedImgUrl = this.getFormatedImgUrl(imgLink);
           }
 
           let bookName = $(element).children('a.bookTitle').text();
@@ -67,6 +63,15 @@ class ScraperController {
       });
     }
     return listedBooks.slice(0, 20);
+  };
+
+  getFormatedImgUrl = (imgLink: string) => {
+    const firstPartConst = 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/';
+    const [_, firstPart] = imgLink.split(firstPartConst);
+    const [firstId, ...lastPart] = firstPart.split('/');
+    const [secondId] = lastPart[0].split('.');
+    const formatedImgUrl = `${firstPartConst}${firstId}/${secondId}.jpg`;
+    return formatedImgUrl;
   };
 
   getSingleDetailsPageContent = async (listedBook: IBook) => {
@@ -119,6 +124,7 @@ class ScraperController {
       const fetchedBook = await booksService.getBookById(req.body.id);
       if (fetchedBook) {
         const updatedBook = await this.getSingleDetailsPageContent(fetchedBook);
+        updatedBook.img = this.getFormatedImgUrl(updatedBook.img);
         if (fetchedBook.description.length && updatedBook.description.length) {
           updatedBook.description =
             fetchedBook.description.length > updatedBook.description.length
