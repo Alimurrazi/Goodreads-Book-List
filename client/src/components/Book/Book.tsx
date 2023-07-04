@@ -46,7 +46,7 @@ const Book = ({ bookDetails, index }: IBookProps) => {
           </div>
         </div>
 
-        <p className="description">{parse(decodedHtmlDescription)}</p>
+        <div className="description">{parse(decodedHtmlDescription)}</div>
       </div>
     </>
   );

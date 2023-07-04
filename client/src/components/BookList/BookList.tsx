@@ -20,8 +20,7 @@ function BookList({ selectedGenre }: IProps) {
 
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight) {
-      // Max fetch 20 books
+    if (scrollTop + clientHeight + 5 >= scrollHeight) {
       if (currentPage < 1) {
         setCurrentPage(currentPage + 1);
       }
@@ -45,7 +44,6 @@ function BookList({ selectedGenre }: IProps) {
         console.log(err);
       },
     );
-    //  }, [currentPage, selectedGenre]);
   }, [currentPage]);
 
   return (
@@ -55,7 +53,7 @@ function BookList({ selectedGenre }: IProps) {
       ))}
       {isLoading && (
         <div className="w-100-p flex-row justify-center">
-          <Spinner name="circle" color="white" style={{ width: 100, height: 100 }} />
+          <Spinner name="circle" color="white" style={{ width: 200, height: 200 }} />
         </div>
       )}
     </>
