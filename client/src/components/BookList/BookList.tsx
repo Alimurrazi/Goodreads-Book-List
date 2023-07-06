@@ -4,6 +4,8 @@ import { IBook } from '../Book/types';
 import BookService from '../../services/Book.service';
 import { useEffect, useState } from 'react';
 import Spinner from 'react-spinkit';
+import { FluentProvider, teamsDarkTheme, Button } from '@fluentui/react-components';
+
 interface IProps {
   selectedGenre: string;
 }
@@ -13,10 +15,10 @@ function BookList({ selectedGenre }: IProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(0);
 
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // useEffect(() => {
+  //   window.addEventListener('scroll', handleScroll);
+  //   return () => window.removeEventListener('scroll', handleScroll);
+  // }, []);
 
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -24,6 +26,12 @@ function BookList({ selectedGenre }: IProps) {
       if (currentPage < 1) {
         setCurrentPage(currentPage + 1);
       }
+    }
+  };
+
+  const onClickNextBtn = () => {
+    if (currentPage < 1) {
+      setCurrentPage(currentPage + 1);
     }
   };
 
@@ -54,6 +62,15 @@ function BookList({ selectedGenre }: IProps) {
       {isLoading && (
         <div className="w-100-p flex-row justify-center">
           <Spinner name="circle" color="white" style={{ width: 200, height: 200 }} />
+        </div>
+      )}
+      {books.length > 0 && (
+        <div className="fit-content">
+          <FluentProvider theme={teamsDarkTheme}>
+            <Button appearance="primary" onClick={() => onClickNextBtn()} disabled={currentPage === 1}>
+              Next
+            </Button>
+          </FluentProvider>
         </div>
       )}
     </>

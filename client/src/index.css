@@ -14,7 +14,9 @@ body {
 #root {
   height: 100%;
 }
-
+.fit-content {
+  width: fit-content;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
