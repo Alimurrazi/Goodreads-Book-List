@@ -23,6 +23,9 @@ code {
 .pb-16 {
   padding-bottom: 16px;
 }
+.pr-40 {
+  padding-right: 40px;
+}
 .flex-row {
   display: flex;
   flex-direction: row;
@@ -33,6 +36,9 @@ code {
 }
 .justify-center {
   justify-content: center;
+}
+.justify-end {
+  justify-content: end;
 }
 .w-60-p {
   width: 60%;

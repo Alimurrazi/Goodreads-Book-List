@@ -14,20 +14,7 @@ function BookList({ selectedGenre }: IProps) {
   const [books, setBooks] = useState<IBook[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(0);
-
-  // useEffect(() => {
-  //   window.addEventListener('scroll', handleScroll);
-  //   return () => window.removeEventListener('scroll', handleScroll);
-  // }, []);
-
-  const handleScroll = () => {
-    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight + 5 >= scrollHeight) {
-      if (currentPage < 1) {
-        setCurrentPage(currentPage + 1);
-      }
-    }
-  };
+  const prevSelectedGenre = React.useRef(selectedGenre);
 
   const onClickNextBtn = () => {
     if (currentPage < 1) {
@@ -36,23 +23,29 @@ function BookList({ selectedGenre }: IProps) {
   };
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setCurrentPage(0);
-  }, [selectedGenre]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    BookService.getBooksByGenre(selectedGenre, currentPage).then(
-      (res) => {
-        currentPage === 0 ? setBooks(res.data) : setBooks([...books, ...res.data]);
-        setIsLoading(false);
-      },
-      (err) => {
-        setIsLoading(false);
-        console.log(err);
-      },
-    );
-  }, [currentPage]);
+    let isApiFetchNeeded = true;
+    if (prevSelectedGenre.current !== selectedGenre) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (currentPage === 1) {
+        isApiFetchNeeded = false;
+      }
+      setCurrentPage(0);
+    }
+    if (isApiFetchNeeded) {
+      setIsLoading(true);
+      BookService.getBooksByGenre(selectedGenre, currentPage).then(
+        (res) => {
+          currentPage === 0 ? setBooks(res.data) : setBooks([...books, ...res.data]);
+          setIsLoading(false);
+        },
+        (err) => {
+          setIsLoading(false);
+          console.log(err);
+        },
+      );
+    }
+    prevSelectedGenre.current = selectedGenre;
+  }, [selectedGenre, currentPage]);
 
   return (
     <>
@@ -65,12 +58,14 @@ function BookList({ selectedGenre }: IProps) {
         </div>
       )}
       {books.length > 0 && (
-        <div className="fit-content">
-          <FluentProvider theme={teamsDarkTheme}>
-            <Button appearance="primary" onClick={() => onClickNextBtn()} disabled={currentPage === 1}>
-              Next
-            </Button>
-          </FluentProvider>
+        <div className="flex-row justify-end pr-40 pb-16">
+          <div className="fit-content">
+            <FluentProvider theme={teamsDarkTheme}>
+              <Button appearance="primary" onClick={() => onClickNextBtn()} disabled={currentPage === 1}>
+                Next
+              </Button>
+            </FluentProvider>
+          </div>
         </div>
       )}
     </>
