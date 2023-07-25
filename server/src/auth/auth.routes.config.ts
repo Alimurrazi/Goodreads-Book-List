@@ -4,7 +4,7 @@ import express from 'express';
 import { body } from 'express-validator';
 import authMiddleware from './middlewares/auth.middleware';
 
-export class AuthRoutes extends CommonRoutesConfig {
+export class AuthRoutesConfig extends CommonRoutesConfig {
   constructor(app: express.Application) {
     super(app, 'AuthRoutes');
   }

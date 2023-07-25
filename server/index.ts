@@ -9,6 +9,7 @@ import cors from 'cors';
 import { ScraperRoutesConfig } from './src/scraper/scraper.routes.config';
 import { BooksRoutesConfig } from './src/books/book.routes.config';
 import mongooseService from './src/common/services/mongoose.service';
+import { AuthRoutesConfig } from './src/auth/auth.routes.config';
 
 const app = express();
 const server = http.createServer(app);
@@ -43,6 +44,7 @@ app.use(expressWinston.logger(loggerOptions));
 routes.push(new UserRoutesConfig(app));
 routes.push(new ScraperRoutesConfig(app));
 routes.push(new BooksRoutesConfig(app));
+routes.push(new AuthRoutesConfig(app));
 const runningMsg = `Server running at http://localhost:${port}`;
 app.get('/', (req, res) => {
   res.status(200).send(runningMsg);

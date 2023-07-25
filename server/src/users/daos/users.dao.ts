@@ -6,8 +6,15 @@ class UsersDao {
   users: CreateUserDto[] = [];
   async addUser(user: CreateUserDto) {
     user.id = shortid.generate();
-    this.users.push(user);
-    return user.id;
+
+    const model = new createUserModel{
+      _id: shortid.generate(),
+      ...bookFields,
+    }();
+    return await createUserModel.save();
+
+    // this.users.push(user);
+    // return user.id;
   }
   async getUsers() {
     return this.users;
