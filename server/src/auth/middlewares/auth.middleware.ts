@@ -10,7 +10,7 @@ class AuthMiddleware {
       const check = await argon2.verify(passwordHash, req.body.password);
       if (check) {
         req.body = {
-          usserId: user.id,
+          usserId: user._id,
           email: user.email,
         };
         return next();

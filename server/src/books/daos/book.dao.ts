@@ -1,7 +1,6 @@
 import { IBook } from '../dtos/book.dto';
 import bookModel from '../models/book.model';
 import shortid from 'shortid';
-import { Document } from 'mongoose';
 
 class BookDao {
   async addBooks(listedBooks: IBook[]) {
