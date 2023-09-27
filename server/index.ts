@@ -10,6 +10,7 @@ import { ScraperRoutesConfig } from './src/scraper/scraper.routes.config';
 import { BooksRoutesConfig } from './src/books/book.routes.config';
 import mongooseService from './src/common/services/mongoose.service';
 import { AuthRoutesConfig } from './src/auth/auth.routes.config';
+import 'dotenv/config';
 
 const app = express();
 const server = http.createServer(app);

@@ -1,6 +1,7 @@
 import express from 'express';
 import { Jwt } from '../../common/types/jwt';
 import jwt from 'jsonwebtoken';
+import 'dotenv/config';
 
 const jwtSecret: string = process.env.JWT_SECRET ? process.env.JWT_SECRET : '';
 
@@ -16,7 +17,7 @@ class JwtMiddleware {
   validJWTNeeded(req: express.Request, res: express.Response, next: express.NextFunction) {
     if (req.headers['authorization']) {
       try {
-        const authorization = req.headers['authorization'].split('');
+        const authorization = req.headers['authorization'].split(' ');
         if (authorization[0] !== 'Bearer') {
           return res.status(401).send();
         } else {

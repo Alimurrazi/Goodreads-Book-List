@@ -2,6 +2,7 @@ import express from 'express';
 import { CommonRoutesConfig } from '../common/common.routes.config';
 import usersController from './controllers/users.controller';
 import usersMiddleware from './middlewares/users.middleware';
+import jwtMiddleware from '../auth/middlewares/jwt.middleware';
 
 export class UserRoutesConfig extends CommonRoutesConfig {
   constructor(app: express.Application) {
@@ -15,6 +16,7 @@ export class UserRoutesConfig extends CommonRoutesConfig {
       .route('/users')
       .get(usersController.getUsers)
       .post(
+        jwtMiddleware.validJWTNeeded,
         usersMiddleware.validateRequiredBodyFields,
         usersMiddleware.validateSameEmailDoesnotExist,
         usersController.createUser,
