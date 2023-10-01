@@ -4,6 +4,8 @@ This is a full-stack web app with React, Express, and Mongoose. There are some A
 
 ## Demo
 
+![image](https://github.com/Alimurrazi/Goodreads-Book-List/assets/23289126/e7dce27b-50ca-459c-ab45-e713fb2191e5)
+
 - Live demo is available here: **[Demo](https://alimurrazi.github.io/Goodreads-Book-List/)**
 
 ## Features
@@ -66,20 +68,6 @@ $ cd client
 $ npm install
 $ npm start
 ```
-
-## Screenshots
-
-![Screenshot1](/screenshots/Screenshot_1.png)
-
-![Screenshot2](/screenshots/Screenshot_2.png)
-
-![Screenshot3](/screenshots/Screenshot_3.png)
-
-![Screenshot4](/screenshots/Screenshot_4.png)
-
-![Screenshot5](/screenshots/Screenshot_5.png)
-
-![Screenshot6](/screenshots/Screenshot_6.png)
 
 ## References
 - This app is built based on the mern-boilerplate template(https://github.com/nemanjam/mern-boilerplate)
