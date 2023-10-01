@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Goodreads-Book-List/static/css/main.5c0701cd.css",
-    "main.js": "/Goodreads-Book-List/static/js/main.acd4403b.js",
+    "main.js": "/Goodreads-Book-List/static/js/main.dd9b67a9.js",
     "static/js/787.c4e7f8f9.chunk.js": "/Goodreads-Book-List/static/js/787.c4e7f8f9.chunk.js",
     "index.html": "/Goodreads-Book-List/index.html",
     "main.5c0701cd.css.map": "/Goodreads-Book-List/static/css/main.5c0701cd.css.map",
-    "main.acd4403b.js.map": "/Goodreads-Book-List/static/js/main.acd4403b.js.map",
+    "main.dd9b67a9.js.map": "/Goodreads-Book-List/static/js/main.dd9b67a9.js.map",
     "787.c4e7f8f9.chunk.js.map": "/Goodreads-Book-List/static/js/787.c4e7f8f9.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.5c0701cd.css",
-    "static/js/main.acd4403b.js"
+    "static/js/main.dd9b67a9.js"
   ]
 }
