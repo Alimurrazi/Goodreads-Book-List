@@ -7,6 +7,8 @@ client/npm-debug.log*
 client/build
 
 **/.env*
+# temporary add .env in client directory. TODO: need to remove below line
+!client/.env
 !**/.env*.example
 */dist
 # ignore mongo data

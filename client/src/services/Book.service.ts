@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { IBook } from '../components/Book/types';
 
-const BOOK_API_BASE_URL = 'http://localhost:5000/books';
+const BOOK_API_BASE_URL =
+  process.env.NODE_ENV === 'development'
+    ? process.env.REACT_APP_BOOK_API_BASE_URL_LOCAL
+    : process.env.REACT_APP_BOOK_API_BASE_URL_PROD;
 
 class BookService {
   getBooks(pageNumber: number) {
