@@ -1,0 +1,20 @@
+.genrePage {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+}
+
+/* Use position: sticky so it stays visible while scrolling */
+.stickySidebar {
+  position: sticky;
+  top: 88px; /* below Topbar height */
+}
+
+/* Cleaner action buttons in card footer */
+.ghostBtn {
+  background: transparent;
+  border: none;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+.ghostBtn:hover { opacity: 0.8; }

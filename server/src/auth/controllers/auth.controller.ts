@@ -2,6 +2,7 @@ import express from 'express';
 import debug from 'debug';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import usersService from '../../users/services/users.service';
 
 const jwtSecret: string = process.env.JWT_SECRET ? process.env.JWT_SECRET : '';
 const log = debug('app:scraper-controller');
@@ -14,6 +15,21 @@ class AuthController {
       const salt = crypto.createSecretKey(crypto.randomBytes(16));
       const hash = crypto.createHmac('sha512', salt).update(refreshId).digest('base64');
       req.body.refreshKey = salt.export();
+      const userInfoFromDb = await usersService.getByEmail(req.body.email);
+      if (userInfoFromDb) {
+        req.body.roles = userInfoFromDb.roles;
+      } else {
+        throw new Error('User not found for accessing token.');
+      }
+
+      const tokenPayload = {
+        email: req.body.email,
+        userId: req.body.userId,
+        refreshKey: salt.export(),
+        roles: userInfoFromDb ? userInfoFromDb.roles : [],
+      };
+
+      //      const token = jwt.sign(tokenPayload, jwtSecret, {
       const token = jwt.sign(req.body, jwtSecret, {
         expiresIn: tokenExpirationInSeconds,
       });

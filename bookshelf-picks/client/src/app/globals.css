@@ -1,0 +1,12 @@
+@import 'antd/dist/reset.css';
+
+html, body, :root {
+  height: 100%;
+}
+body {
+  margin: 0;
+}
+.logo {
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
