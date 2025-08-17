@@ -1,9 +1,8 @@
-'use client';
+"use client";
 
-import React, { useMemo, useState } from 'react';
-import AppShell from '@/components/AppShell';
+import React, { useMemo, useState } from "react";
+import AppShell from "@/components/AppShell";
 import {
-  Badge,
   Button,
   Card,
   Checkbox,
@@ -17,15 +16,11 @@ import {
   Space,
   Tag,
   Typography,
-} from 'antd';
-import {
-  HeartFilled,
-  HeartOutlined,
-  MoreOutlined,
-} from '@ant-design/icons';
-import Link from 'next/link';
+} from "antd";
+import { HeartFilled, HeartOutlined, MoreOutlined } from "@ant-design/icons";
+import Link from "next/link";
 
-type Status = 'read' | 'want' ;
+type Status = "read" | "want";
 type Book = {
   id: string;
   title: string;
@@ -38,47 +33,51 @@ type Book = {
 
 const initialBooks: Book[] = [
   {
-    id: '1',
-    title: 'The Hobbit',
-    author: 'J.R.R. Tolkien',
+    id: "1",
+    title: "The Hobbit",
+    author: "J.R.R. Tolkien",
     description:
-      'Bilbo Baggins is swept into a quest to reclaim the lost Dwarf Kingdom of Erebor.',
+      "Bilbo Baggins is swept into a quest to reclaim the lost Dwarf Kingdom of Erebor.",
     cover:
-      'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800',
-    status: 'read',
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800",
+    status: "read",
     favorite: true,
   },
   {
-    id: '2',
-    title: '1984',
-    author: 'George Orwell',
+    id: "2",
+    title: "1984",
+    author: "George Orwell",
     description:
-      'A chilling dystopia about surveillance, control, and the erosion of truth.',
+      "A chilling dystopia about surveillance, control, and the erosion of truth.",
     cover:
-      'https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=800',
-    status: 'want',
+      "https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=800",
+    status: "want",
     favorite: false,
   },
   {
-    id: '3',
-    title: 'Atomic Habits',
-    author: 'James Clear',
+    id: "3",
+    title: "Atomic Habits",
+    author: "James Clear",
     description:
-      'Tiny changes, remarkable results. A practical guide to building good habits.',
+      "Tiny changes, remarkable results. A practical guide to building good habits.",
     cover:
-      'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=800',
-    status: 'read',
+      "https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=800",
+    status: "read",
     favorite: false,
   },
 ];
 
 const statusTag = (s: Status) =>
-  s === 'read' ? <Tag color="green">Read</Tag> : <Tag color="gold">Want to read</Tag>;
+  s === "read" ? (
+    <Tag color="green">Read</Tag>
+  ) : (
+    <Tag color="gold">Want to read</Tag>
+  );
 
 export default function BooksPage() {
   const [books, setBooks] = useState<Book[]>(initialBooks);
-  const [q, setQ] = useState('');
-  const [filterStatus, setFilterStatus] = useState<Status | 'all'>('all');
+  const [q, setQ] = useState("");
+  const [filterStatus, setFilterStatus] = useState<Status | "all">("all");
   const [onlyFav, setOnlyFav] = useState(false);
 
   const filtered = useMemo(() => {
@@ -87,7 +86,8 @@ export default function BooksPage() {
         !q ||
         b.title.toLowerCase().includes(q.toLowerCase()) ||
         b.author.toLowerCase().includes(q.toLowerCase());
-      const matchesStatus = filterStatus === 'all' ? true : b.status === filterStatus;
+      const matchesStatus =
+        filterStatus === "all" ? true : b.status === filterStatus;
       const matchesFav = onlyFav ? b.favorite : true;
       return matchesQ && matchesStatus && matchesFav;
     });
@@ -95,30 +95,33 @@ export default function BooksPage() {
 
   const toggleFavorite = (id: string) =>
     setBooks((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, favorite: !b.favorite } : b))
+      prev.map((b) => (b.id === id ? { ...b, favorite: !b.favorite } : b)),
     );
 
   const changeStatus = (id: string, status: Status) =>
     setBooks((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
 
-  const cardMenu = (book: Book): MenuProps['items'] => [
+  const cardMenu = (book: Book): MenuProps["items"] => [
     {
-      key: 'read',
-      label: 'Mark as Read',
-      onClick: () => changeStatus(book.id, 'read'),
+      key: "read",
+      label: "Mark as Read",
+      onClick: () => changeStatus(book.id, "read"),
     },
     {
-      key: 'want',
-      label: 'Mark as Want to Read',
-      onClick: () => changeStatus(book.id, 'want'),
+      key: "want",
+      label: "Mark as Want to Read",
+      onClick: () => changeStatus(book.id, "want"),
     },
-    { type: 'divider' },
-    { key: 'details', label: <Link href={`/books/${book.id}`}>View details</Link> },
+    { type: "divider" },
+    {
+      key: "details",
+      label: <Link href={`/books/${book.id}`}>View details</Link>,
+    },
   ];
 
   return (
     <AppShell>
-      <Space direction="vertical" size="large" style={{ width: '100%' }}>
+      <Space direction="vertical" size="large" style={{ width: "100%" }}>
         {/* Top controls */}
         <Flex wrap="wrap" gap={12} align="center" justify="space-between">
           <Typography.Title level={3} style={{ margin: 0 }}>
@@ -138,12 +141,15 @@ export default function BooksPage() {
               style={{ width: 180 }}
               onChange={(v) => setFilterStatus(v)}
               options={[
-                { value: 'all', label: 'All statuses' },
-                { value: 'read', label: 'Read' },
-                { value: 'want', label: 'Want to read' },
+                { value: "all", label: "All statuses" },
+                { value: "read", label: "Read" },
+                { value: "want", label: "Want to read" },
               ]}
             />
-            <Checkbox checked={onlyFav} onChange={(e) => setOnlyFav(e.target.checked)}>
+            <Checkbox
+              checked={onlyFav}
+              onChange={(e) => setOnlyFav(e.target.checked)}
+            >
               Favorites only
             </Checkbox>
           </Flex>
@@ -163,8 +169,8 @@ export default function BooksPage() {
                     style={{
                       height: 200,
                       backgroundImage: `url(${b.cover})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
                     }}
                   />
                 }
@@ -175,14 +181,24 @@ export default function BooksPage() {
                     onClick={() => toggleFavorite(b.id)}
                     icon={b.favorite ? <HeartFilled /> : <HeartOutlined />}
                   >
-                    {b.favorite ? 'Favorited' : 'Favorite'}
+                    {b.favorite ? "Favorited" : "Favorite"}
                   </Button>,
-                  <Dropdown key="more" menu={{ items: cardMenu(b) }} trigger={['click']}>
-                    <Button type="text" icon={<MoreOutlined />}>More</Button>
+                  <Dropdown
+                    key="more"
+                    menu={{ items: cardMenu(b) }}
+                    trigger={["click"]}
+                  >
+                    <Button type="text" icon={<MoreOutlined />}>
+                      More
+                    </Button>
                   </Dropdown>,
                 ]}
               >
-                <Space direction="vertical" size={4} style={{ display: 'block' }}>
+                <Space
+                  direction="vertical"
+                  size={4}
+                  style={{ display: "block" }}
+                >
                   <Link href={`/books/${b.id}`}>
                     <Typography.Title level={5} style={{ marginBottom: 0 }}>
                       {b.title}
@@ -192,9 +208,7 @@ export default function BooksPage() {
                   <Typography.Paragraph ellipsis={{ rows: 3 }}>
                     {b.description}
                   </Typography.Paragraph>
-                  <Space align="center">
-                    {statusTag(b.status)}
-                  </Space>
+                  <Space align="center">{statusTag(b.status)}</Space>
                 </Space>
               </Card>
             </List.Item>
