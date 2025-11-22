@@ -7,14 +7,13 @@ const BOOK_API_BASE_URL =
     : process.env.NEXT_PUBLIC_BOOK_API_BASE_URL_PROD;
 
 class BookService {
-  //   getBooks(pageNumber: number) {
-  //     const url = `${BOOK_API_BASE_URL}?limit=25&page=${pageNumber}`;
-  //     return axios.get<book[]>(url);
-  //   }
-
   getBooksByGenre(genre: string, pageNumber: number) {
     const url = `${BOOK_API_BASE_URL}?genre=${genre}&page=${pageNumber}`;
     return axios.get<Book[]>(url);
+  }
+  getBookById(id: string) {
+    const url = `${BOOK_API_BASE_URL}/${id}`;
+    return axios.get<Book>(url);
   }
 }
 

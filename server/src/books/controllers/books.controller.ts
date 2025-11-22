@@ -12,6 +12,14 @@ class BooksController {
   getAllBooks = async () => {
     return await booksService.getAllBooks();
   };
+  getBookById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    try {
+      const book = await booksService.getBookById(req.params.bookId);
+      res.status(200).send(book);
+    } catch (error) {
+      next(error);
+    }
+  };
   getBooksByGenre = async (req: express.Request, res: express.Response) => {
     const genre = req.query.genre;
     if (genre) {

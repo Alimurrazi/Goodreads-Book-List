@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import AppShell from "@/components/AppShell";
 import GenreHeader from "@/components/GenreHeader";
 import QuoteSidebar from "@/components/QuoteSidebar";
@@ -47,29 +53,76 @@ export default function GenrePage() {
     "all",
   );
   const [onlyFav, setOnlyFav] = useState(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  //  parse + decode once per fetched chunk
+  const hydrate = useMemo(
+    () => (arr: Book[]) => {
+      return arr.map((b) => ({
+        ...b,
+        description: parse(decodeHTMLEntities(String(b.description))),
+      }));
+    },
+    [],
+  );
 
   const currentQuote = useMemo(() => {
     const index = getRandomQuoteIndex();
     return quotes[index];
   }, []);
 
+  const fetchPage = useCallback(
+    async (p: number) => {
+      setIsLoading(true);
+      try {
+        const res = await BookService.getBooksByGenre(slug, p);
+        const chunk = hydrate(res.data);
+
+        setBooks((prev) => (p === 0 ? chunk : [...prev, ...chunk]));
+
+        // Stop when API returns no items (safe generic rule).
+        // If you know your server page size (e.g., 20), use:
+        // setHasMore(chunk.length === 20);
+        setHasMore(chunk.length > 0);
+      } catch (e) {
+        console.error("Failed to fetch books", e);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [slug, hydrate],
+  );
+
   useEffect(() => {
-    setIsLoading(true);
-    BookService.getBooksByGenre(slug, 1)
-      .then((res) => {
-        let tempBooks = res.data;
-        tempBooks = tempBooks.map((tempBook) => ({
-          ...tempBook,
-          description: parse(decodeHTMLEntities(tempBook.description)),
-        }));
-        setBooks(tempBooks);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch books", err);
-      })
-      .finally(() => setIsLoading(false));
-  }, [slug]);
+    setBooks([]);
+    setPage(0);
+    setHasMore(true);
+    fetchPage(0);
+  }, [slug, fetchPage]);
+
+  useEffect(() => {
+    if (!hasMore || isLoading) return;
+    const el = loadMoreRef.current;
+    if (!el) return;
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (first.isIntersecting && hasMore && !isLoading) {
+          const next = page + 1;
+          setPage(next);
+          fetchPage(next);
+        }
+      },
+      { root: null, rootMargin: "400px", threshold: 0 },
+    );
+
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [hasMore, isLoading, page, fetchPage]);
 
   const filtered = useMemo(() => {
     return books.filter((b) => {
@@ -180,7 +233,7 @@ export default function GenrePage() {
                       cover={
                         <div
                           style={{
-                            height: 220,
+                            height: 320,
                             backgroundImage: `url(${b.img})`,
                             backgroundSize: "cover",
                             backgroundPosition: "center",
@@ -233,6 +286,16 @@ export default function GenrePage() {
                 </List.Item>
               )}
             />
+          )}
+        </div>
+
+        <div ref={loadMoreRef} style={{ padding: 16, textAlign: "center" }}>
+          {isLoading ? (
+            <Spin />
+          ) : hasMore ? (
+            "Scroll to load more"
+          ) : (
+            "You’re all caught up"
           )}
         </div>
 

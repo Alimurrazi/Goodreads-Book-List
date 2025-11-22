@@ -8,6 +8,7 @@ export type Book = {
   ratings: number;
   firstPublished: number;
   img: string;
-  description: string;
+  description: string | React.JSX.Element | React.JSX.Element[];
   genres: string[];
+  detailsLink: string;
 };

@@ -12,12 +12,12 @@ class AuthController {
   async createJWT(req: express.Request, res: express.Response) {
     try {
       const refreshId = req.body.userId + jwtSecret;
-      const salt = crypto.createSecretKey(crypto.randomBytes(16));
+      const salt = crypto.createSecretKey(crypto.randomBytes(16) as any);
       const hash = crypto.createHmac('sha512', salt).update(refreshId).digest('base64');
       req.body.refreshKey = salt.export();
       const userInfoFromDb = await usersService.getByEmail(req.body.email);
       if (userInfoFromDb) {
-        req.body.roles = userInfoFromDb.roles;
+        req.body.roles = (userInfoFromDb as any).roles;
       } else {
         throw new Error('User not found for accessing token.');
       }
@@ -26,7 +26,7 @@ class AuthController {
         email: req.body.email,
         userId: req.body.userId,
         refreshKey: salt.export(),
-        roles: userInfoFromDb ? userInfoFromDb.roles : [],
+        roles: userInfoFromDb ? (userInfoFromDb as any).roles : [],
       };
 
       //      const token = jwt.sign(tokenPayload, jwtSecret, {

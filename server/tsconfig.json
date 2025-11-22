@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+        "lib": ["ES2022"],               // omit "DOM" unless you really need it
+    "types": ["node"],               // ensure Node types are loaded
+    "moduleResolution": "Node",
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
     /* Projects */

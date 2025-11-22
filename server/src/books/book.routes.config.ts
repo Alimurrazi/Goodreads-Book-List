@@ -11,6 +11,7 @@ export class BooksRoutesConfig extends CommonRoutesConfig {
   }
   configureRoutes(): express.Application {
     this.app.route('/books').get(BooksController.getBooksByGenre);
+    this.app.route('/books/:bookId').get(BooksController.getBookById);
     //  this.app.route('/books').delete(BooksController.deleteAllBooks);
     return this.app;
   }
